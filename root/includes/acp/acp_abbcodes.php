@@ -1,7 +1,7 @@
 <?php
 /**
-* @package: phpBB 3.0.5 :: Advanced BBCode box 3 -> root/includes/acp
-* @version: $Id: acp_abbcode.php, v 1.0.12 2009/08/01 09:08:01 leviatan21 Exp $
+* @package: phpBB 3.0.6 :: Advanced BBCode box 3 -> root/includes/acp
+* @version: $Id: acp_abbcode.php, v 3.0.6 2010/01/10 10:01:10 leviatan21 Exp $
 * @copyright: leviatan21 < info@mssti.com > (Gabriel) http://www.mssti.com/phpbb3/
 * @license: http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author: leviatan21 - http://www.phpbb.com/community/memberlist.php?mode=viewprofile&u=345763
@@ -293,7 +293,7 @@ class acp_abbcodes
 
 			'L_TITLE_EDIT'		=> $user->lang['ABBCODES_SETINGS'],
 			'L_TITLE_EXPLAIN'	=> $user->lang['ABBCODES_SETINGS_EXPLAIN'],
-			'ICON_BASEDIR'		=> $this->dir,
+			'ICON_BASEDIR'		=> $this->dir . '/images/bg/',
 
 			'S_ERROR'			=> (sizeof($error)) ? true : false,
 			'ERROR_MSG'			=> implode('<br />', $error),
@@ -304,26 +304,26 @@ class acp_abbcodes
 			'U_ABBC3'			=> $user->lang['ABBC3_HELP_ABOUT'],
 			'U_ACTION'			=> $this->u_action,
 
-			// Check wich options can be used for the resizer method
-			'ADVANCEDBOX_EXIST'					=> (@file_exists("$abb3_path/AdvancedBox.js")		 ) ? 1 : 0,
+			// Check which options can be used for the resize method
+			'ADVANCEDBOX_EXIST'					=> (@file_exists("$abb3_path/AdvancedBox.js")) ? 1 : 0,
 			'L_NO_EXIST_EXPLAIN_ADVANCEDBOX'	=> sprintf($user->lang['NO_EXIST_EXPLAIN_ADVANCEDBOX'], $board_path),
 
 			'HIGHSLIDE_EXIST'					=> (@file_exists("$abb3_path/highslide/highslide-full.js")) ? 1 : 0,
-			'L_NO_EXIST_EXPLAIN_HIGHSLIDE'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "highslide-full.packed.js", "4.0.1", "{$board_path}highslide/", "Highslide JS", "http://highslide.com/download.php"),
+			'L_NO_EXIST_EXPLAIN_HIGHSLIDE'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "highslide-full.js", "4.0.1", "{$board_path}highslide/", "Highslide JS", "http://highslide.com/download.php"),
 
-			'LITEBOX_EXIST'						=> (@file_exists("$abb3_path/lightbox/lightbox.js")	 ) ? 1 : 0,
-			'L_NO_EXIST_EXPLAIN_LITEBOX'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "lightbox.js", "2.04", "{$board_path}lightbox/", "Lightbox JS", "http://highslide.com/download.php"),
+			'LITEBOX_EXIST'						=> (@file_exists("$abb3_path/lightbox/lightbox.js")) ? 1 : 0,
+			'L_NO_EXIST_EXPLAIN_LITEBOX'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "lightbox.js", "2.04", "{$board_path}lightbox/", "Lightbox JS", "http://www.huddletogether.com/projects/lightbox/"),
 
-			'GREYBOX_EXIST'						=> (@file_exists("$abb3_path/greybox/gb_scripts.js") ) ? 1 : 0,
+			'GREYBOX_EXIST'						=> (@file_exists("$abb3_path/greybox/gb_scripts.js")) ? 1 : 0,
 			'L_NO_EXIST_EXPLAIN_GREYBOX'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "gb_scripts.js", "5.53", "{$board_path}greybox/", "GreyBox", "http://orangoo.com/labs/GreyBox/Download/"),
 
 			'LIGHTVIEW_EXIST'					=> (@file_exists("$abb3_path/lightview/js/lightview.js")) ? 1 : 0,
 			'L_NO_EXIST_EXPLAIN_LIHTVIEW'		=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "lightview.js", "2.5", "{$board_path}lightview/js/", "Lightview", "http://www.nickstakenburg.com/projects/lightview/"),
 
-			'IBOX_EXIST'						=> (@file_exists("$abb3_path/ibox/ibox.js")			 ) ? 1 : 0,
+			'IBOX_EXIST'						=> (@file_exists("$abb3_path/ibox/ibox.js")) ? 1 : 0,
 			'L_NO_EXIST_EXPLAIN_IBOX'			=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "ibox.js", "2.18", "{$board_path}ibox/", "iBox", "http://www.ibegin.com/labs/ibox/"),
 
-			'POPBOX_EXIST'						=> (@file_exists("$abb3_path/PopBox/PopBox.js")		 ) ? 1 : 0,
+			'POPBOX_EXIST'						=> (@file_exists("$abb3_path/PopBox/PopBox.js")) ? 1 : 0,
 			'L_NO_EXIST_EXPLAIN_POPBOX'			=> sprintf($user->lang['NO_EXIST_EXPLAIN_OTHERS'], "PopBox.js", "2.6b", "{$board_path}PopBox/", "PopBox", "http://www.c6software.com/Products/PopBox/"),
 		));
 
@@ -379,9 +379,9 @@ class acp_abbcodes
 
 		$sql_ary = array(
 			'bbcode_id'					=> $next_bbcode_id,
-			'bbcode_tag'				=> ($add_linebreak ? 'break' : 'division') . $next_bbcode_number,
-			'bbcode_helpline'			=> ($add_linebreak ? 'ABBC3_BREAK' : 'ABBC3_DIVISION'),
-			'display_on_posting'		=> false,
+			'bbcode_tag'				=> (($add_linebreak) ? 'break' : 'division') . $next_bbcode_number,
+			'bbcode_helpline'			=> ($add_linebreak) ? 'ABBC3_BREAK' : 'ABBC3_DIVISION',
+			'display_on_posting'		=> true,
 			'display_on_pm'				=> false,
 			'display_on_sig'			=> false,
 			'bbcode_match'				=> '.',
@@ -391,19 +391,17 @@ class acp_abbcodes
 			'second_pass_match'			=> '.',
 			'second_pass_replace'		=> '.',
 			'abbcode'					=> true,
-			'bbcode_image'				=> ($add_linebreak ? 'spacer.gif' : 'dots.gif'),
+			'bbcode_image'				=> ($add_linebreak) ? 'spacer.gif' : 'dots.gif',
 			'bbcode_order'				=> $next_bbcode_order,
 		);
 		$db->sql_query('INSERT INTO ' . BBCODES_TABLE . $db->sql_build_array('INSERT', $sql_ary));
 
 		$cache->destroy('sql', BBCODES_TABLE);
+
 		$user->add_lang('acp/posting');
-		$lang = 'BBCODE_ADDED';
-		$log_action = 'LOG_BBCODE_ADD';
+		add_log('admin', 'LOG_BBCODE_ADD', $sql_ary['bbcode_tag']);
 
-		add_log('admin', $log_action, $sql_ary['bbcode_tag']);
-
-		trigger_error($user->lang[$lang] . adm_back_link($this->u_action));
+		trigger_error($user->lang['BBCODE_ADDED'] . adm_back_link($this->u_action));
 	}
 
 	/**
@@ -450,7 +448,7 @@ class acp_abbcodes
 		$user->add_lang(array('acp/posting', 'mods/acp_abbcodes', 'mods/abbcode'));
 
 		// Is this ABBC3 is disabled
-		if (!$config['ABBC3_MOD'])
+		if (!isset($config['ABBC3_MOD']))
 		{
 			trigger_error($user->lang['ABBCODES_MOD_DISABLE'] . adm_back_link($this->u_action), E_USER_WARNING);
 		}
@@ -478,9 +476,9 @@ class acp_abbcodes
 			);
 
 			// Fix for breack line?
-			if (substr($abbcode_name[$bbcode],0,5) == 'break')
+			if (substr($abbcode_name[$bbcode],0,14) == 'ABBCODES_BREAK')
 			{
-				$bbcode_sql['bbcode_image'] = 'spacer.gif';
+				$bbcode_sql['bbcode_image'] = $img_spacer;
 			}
 
 			$sql = "UPDATE " . BBCODES_TABLE . "
@@ -530,7 +528,7 @@ class acp_abbcodes
 
 			'S_BBCODE_EDIT'		=> ($bbcode) ? true :false,
 
-			'ICON_BASEDIR'		=> $this->dir,
+			'ICON_BASEDIR'		=> $this->dir . '/images/',
 
 			'S_ERROR'			=> (sizeof($error)) ? true : false,
 			'ERROR_MSG'			=> implode('<br />', $error),
@@ -578,15 +576,11 @@ class acp_abbcodes
 				{
 						$abbcode_name = 'ABBCODES_BREAK';
 				}
-				else
-				{
-					
-				}
 			}
 
 			if ($abbcode_name == 'ABBC3_COLOR')
 			{
-				$first_row_to_move = $row['bbcode_order']+1;
+				$first_row_to_move = $row['bbcode_order'] + 1;
 			}
 
 			$abbcode_explain = (isset($user->lang[$abbcode_name . '_MOVER'])) ? $user->lang[$abbcode_name . '_MOVER'] : '';
@@ -615,7 +609,7 @@ class acp_abbcodes
 					'ON_PM'					=> ($row['display_on_pm'])		? $user->lang['ENABLED'] : $user->lang['DISABLED'],
 					'ON_SIG'				=> ($row['display_on_sig'])		? $user->lang['ENABLED'] : $user->lang['DISABLED'],
 
-					'S_NOMOVE'				=> (in_array($abbcode_name, $no_move)) ? true : null,
+					'S_NOMOVE'				=> (in_array($abbcode_name, $no_move)) ? true : false,
 					'S_FIRST_ROW'			=> ($row['bbcode_order'] == $first_row_to_move) ? true : false,
 
 					'U_EDIT'				=> $this->u_action . '&amp;mode=bbcodes&amp;action=edit&amp;bbcode_id=' . $row['bbcode_id'],
@@ -638,7 +632,7 @@ class acp_abbcodes
 					'PM_CHECKED'			=> ($row['display_on_pm'])		? ' checked="checked"' : '',
 					'SIG_CHECKED'			=> ($row['display_on_sig'])		? ' checked="checked"' : '',
 
-					'S_GROUP_OPTIONS'		=> groups_select_options(split(',', $row['bbcode_group']), $exclude),
+					'S_GROUP_OPTIONS'		=> groups_select_options(explode(',', $row['bbcode_group']), $exclude),
 				));
 			}
 		}
@@ -700,7 +694,7 @@ class acp_abbcodes
 
 		$method_options = $user->lang['ABBCODES_RESIZE_METHODS'];
 
-		$s_method_options = '<select id="' .$ide .'" name="' . $name . '">';
+		$s_method_options = '<select id="' . $ide . '" name="' . $name . '">';
 		foreach($method_options as $method_name => $method_value)
 		{
 			$selected = ($selected_method == $method_name) ? ' selected="selected"' : '';
@@ -726,7 +720,6 @@ class acp_abbcodes
 		{
 			$selected = (is_array($select_id)) ? ((in_array($row['group_id'], $select_id)) ? ' selected="selected"' : '') : (($row['group_id'] == $select_id) ? ' selected="selected"' : '');
 			$group_options .= '<option value="' . $row['group_id'] . '"' . $selected . '>' . ucfirst(strtolower((($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']))) . '</option>';
-	//		$group_options .= '<option' . (($row['group_type'] == GROUP_SPECIAL) ? ' class="sep"' : '') . ' value="' . $row['group_id'] . '"' . $selected . '>' . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . '</option>';
 		}
 		$db->sql_freeresult($result);
 		return $group_options;

@@ -129,6 +129,10 @@ hr.hrdotted   { border: 0 none #cccccc; border-top: 1px dotted #cccccc; margin: 
 }
 /* wizards - End */
 
+.fade_link {
+	display: inline-table !important;
+}
+
 /** testlink Start **/
 dl.testlink {
 	margin: 0 1px;
@@ -280,7 +284,7 @@ marquee {
 
 /* Anchor - Start */
 a.anchor    { color: #ff0000; }
-span.anchor { border-bottom: 1px #000000 dashed ; }
+span.anchor { border-bottom: 1px #000000 dashed; }
 /* Anchor - End */
 
 /* bbvideo - Start */

@@ -6,8 +6,9 @@ var copy_paste = '';
 /**
 * Default values for width and height values for the wizard pop-up window
 **/
-var popup_width = 700;
-var popup_height = 400;
+var popup_width		= 700;
+var popup_height	= 400;
+var popup_wizards	= true; //(typeof mkportalurl == 'undefined' || mkportalurl == null || mkportalurl == '') ? true : false;
 
 /**
 * Help line tips values
@@ -15,7 +16,7 @@ var popup_height = 400;
 var help_line2 = {
 
 <!-- BEGIN abbc3_help -->
-	'{abbc3_help.TAG_NAME}'	: ("{abbc3_help.TAG_MOVER}" ? "{abbc3_help.TAG_MOVER}" : "") + (("{abbc3_help.TAG_TIP}" || "{abbc3_help.TAG_NOTE}") ? " :" : "" ) + (("{abbc3_help.TAG_TIP}") ? " {abbc3_help.TAG_TIP}" : "") + (("{abbc3_help.TAG_NOTE}") ? " {abbc3_help.TAG_NOTE}" : "") + (("{abbc3_help.TAG_EXAMPLE}") ? "\n{L_ABBC3_EXAMPLE} : {abbc3_help.TAG_EXAMPLE}" : "" ),
+	'{abbc3_help.TAG_NAME}'	: ("{abbc3_help.TAG_MOVER}" ? "{abbc3_help.TAG_MOVER}" : "") + (("{abbc3_help.TAG_TIP}" || "{abbc3_help.TAG_NOTE}") ? " :" : "") + (("{abbc3_help.TAG_TIP}") ? " {abbc3_help.TAG_TIP}" : "") + (("{abbc3_help.TAG_NOTE}") ? " {abbc3_help.TAG_NOTE}" : "") + (("{abbc3_help.TAG_EXAMPLE}") ? "\n{L_ABBC3_EXAMPLE} : {abbc3_help.TAG_EXAMPLE}" : ""),
 <!-- END abbc3_help -->
 	
 	'abbc3_font'			: "{LA_ABBC3_FONT_MOVER}" + "{LA_ABBC3_FONT_TIP}" + '\n' + "{LA_ABBC3_FONT_NOTE}",
@@ -29,23 +30,24 @@ var help_line2 = {
 /**
 * Show help line tips
 **/
-function helpline2( help )
+function helpline2(help)
 {
-	if ( !help )
+	if (!help)
 	{
 		help = 'abbc3_tip';
 	}
-	
-	var helpbox = document.forms[form_name].helpbox;
-	
-	helpbox.value = ( help_line2[help] ) ? help_line2[help] : help_line[help];
+
+	if (helpbox = document.forms[form_name].helpbox)
+	{
+		helpbox.value = (help_line2[help]) ? help_line2[help] : help_line[help];
+	}
 }
 
 /**
 * Main function Apply bbcodes
 * based-of editor.js on function bbfontstyle(bbopen, bbclose)
 **/
-function bbstyle2( bbcode )
+function bbstyle2(bbcode)
 {
 	theSelection = false;
 
@@ -60,171 +62,259 @@ function bbstyle2( bbcode )
 	}
 	else if (document.forms[form_name].elements[text_name].selectionEnd && (document.forms[form_name].elements[text_name].selectionEnd - document.forms[form_name].elements[text_name].selectionStart > 0))
 	{
-		var selLength = textarea.textLength;
-		var selStart = textarea.selectionStart;
-		var selEnd = textarea.selectionEnd;
-		var scrollTop = textarea.scrollTop;
-		
+		var selLength	= textarea.textLength;
+		    selLength	= (typeof selLength == 'undefined' || selLength == null || selLength == '') ? txtarea.value.length : selLength;
+		var selStart	= textarea.selectionStart;
+		var selEnd		= textarea.selectionEnd;
+		var scrollTop	= textarea.scrollTop;
+
 		if (selEnd == 1 || selEnd == 2) 
 		{
 			selEnd = selLength;
 		}
-		
+
 		var s1 = (textarea.value).substring(0,selStart);
 		var s2 = (textarea.value).substring(selStart, selEnd)
 		var s3 = (textarea.value).substring(selEnd, selLength);
-		
+
 		theSelection = s2
 	}
 
 	var theSelectionLength = theSelection.length;
 
-	switch ( bbcode )
+/** wizards are disabled ?  - Start **/
+	if (!popup_wizards)
+	{
+		switch (bbcode)
+		{
+			case "abbc3_url" :
+				bbfontstyle("[url]", "[/url]");
+				break;
+			case "abbc3_ed2k" :
+				bbfontstyle("[url]", "[/url]");
+				break;
+			case "abbc3_email" :
+				bbfontstyle("[email]", "[/email]");
+				break;
+			case "abbc3_web" :
+				bbcode_extra = ' 100%,100';
+				bbfontstyle("[web" + bbcode_extra + "]", "[/web]");
+				break;
+			case "abbc3_img" :
+				bbfontstyle("[img]", "[/img]");
+				break;
+			case "abbc3_thumbnail" :
+				bbfontstyle("[thumbnail]", "[/thumbnail]");
+				break;
+	//		case "abbc3_upload" :
+	//		case "abbc3_rapidshare" :
+			case "abbc3_testlink" :
+				bbfontstyle("[testlink]", "[/testlink]");
+				break;
+			case "abbc3_click" :
+				bbfontstyle("[click=]", "[/click]");
+				break;
+			case "abbc3_table" :
+				bbfontstyle("[table=][tr=][td=]", "[/td][/tr][/table]");
+				break;
+			case "deezer" :
+				bbfontstyle("[deezer]", "[/deezer]");
+				break;
+			case "abbc3_bbvideo" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[bbvideo" + bbcode_extra + "]", "[/bbvideo]");
+				break;
+			case "abbc3_flash" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[flash" + bbcode_extra + "]", "[/flash]");
+				break;
+			case "abbc3_flv" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[flv" + bbcode_extra + "]", "[/flv]");
+				break;
+			case "abbc3_video" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[video" + bbcode_extra + "]", "[/video]");
+				break;
+			case "abbc3_quicktime" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[quicktime" + bbcode_extra + "]", "[/quicktime]");
+				break;
+			case "abbc3_ram" :
+				bbcode_extra = " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}";
+				bbfontstyle("[ram" + bbcode_extra + "]", "[/ram]");
+				break;
+			/** Web videos bbcodes **/
+			case "abbc3_stream" :
+				bbfontstyle("stream]", "[/stream]");
+				break;
+			case "abbc3_stage6" :
+				bbfontstyle("[stage6" + bbcode_extra + "]", "[/stage6]");
+				break;
+			case "abbc3_veoh" :
+				bbfontstyle("[veoh]", "[/veoh]");
+				break;
+			case "abbc3_collegehumor" :
+				bbfontstyle("[collegehumor]", "[/collegehumor]");
+				break;
+			case "abbc3_gvideo" :
+				bbfontstyle("[gvideo]", "[/gvideo]");
+				break;
+			case "abbc3_youtube" :
+				bbfontstyle("[youtube]", "[/youtube]");
+				break;
+	//	case "abbc3_grad" :
+		}
+		return true;
+	}
+/** wizards are disabled ?  - End **/
+
+	switch (bbcode)
 	{
 		case "abbc3_alignjustify" :
-			bbfontstyle( "[align=justify]", "[/align]" );
+			bbfontstyle("[align=justify]", "[/align]");
 			break;
 		case "abbc3_alignright":
-			bbfontstyle( "[align=right]", "[/align]" );
+			bbfontstyle("[align=right]", "[/align]");
 			break;
 		case "abbc3_aligncenter" :
-			bbfontstyle( "[align=center]", "[/align]" );
+			bbfontstyle("[align=center]", "[/align]");
 			break;
 		case "abbc3_alignleft" :
-			bbfontstyle( "[align=left]", "[/align]" );
+			bbfontstyle("[align=left]", "[/align]");
 			break;
 		case "abbc3_sup" :
-			bbfontstyle( "[sup]", "[/sup]" );
+			bbfontstyle("[sup]", "[/sup]");
 			break;
 		case "abbc3_sub" :
-			bbfontstyle( "[sub]", "[/sub]" );
+			bbfontstyle("[sub]", "[/sub]");
 			break;
 		case "abbc3_b" :
-			bbfontstyle( "[b]", "[/b]" );
+			bbfontstyle("[b]", "[/b]");
 			break;
 		case "abbc3_i" :
-			bbfontstyle( "[i]", "[/i]" );
+			bbfontstyle("[i]", "[/i]");
 			break;
 		case "abbc3_u" :
-			bbfontstyle( "[u]", "[/u]" );
+			bbfontstyle("[u]", "[/u]");
 			break;
 		case "abbc3_s" :
-			bbfontstyle( "[s]", "[/s]" );
+			bbfontstyle("[s]", "[/s]");
 			break;
 		case "abbc3_pre" :
-			bbfontstyle( "[pre]", "[/pre]" );
+			bbfontstyle("[pre]", "[/pre]");
 			break;
 		case "abbc3_tab" :
-			bbfontstyle( "[tab=30]", "" );
+			bbfontstyle("[tab=30]", "");
 			break;
 		case "abbc3_fade" :
-			bbfontstyle( "[fade]", "[/fade]" );
+			bbfontstyle("[fade]", "[/fade]");
 			break;
 		case "abbc3_dirrtl" :
-			bbfontstyle( "[dir=rtl]", "[/dir]" );
+			bbfontstyle("[dir=rtl]", "[/dir]");
 			break;
 		case "abbc3_dirltr" :
-			bbfontstyle( "[dir=ltr]", "[/dir]" );
+			bbfontstyle("[dir=ltr]", "[/dir]");
 			break;
 		case "abbc3_marqdown" :
-			bbfontstyle( "[marq=down]", "[/marq]" );
+			bbfontstyle("[marq=down]", "[/marq]");
 			break;
 		case "abbc3_marqup" :
-			bbfontstyle( "[marq=up]", "[/marq]" );
+			bbfontstyle("[marq=up]", "[/marq]");
 			break;
 		case "abbc3_marqleft" :
-			bbfontstyle( "[marq=left]", "[/marq]" );
+			bbfontstyle("[marq=left]", "[/marq]");
 			break;
 		case "abbc3_marqright" :
-			bbfontstyle( "[marq=right]", "[/marq]" );
+			bbfontstyle("[marq=right]", "[/marq]");
 			break;
 		case "abbc3_html" :
-			bbfontstyle( "[html]", "[/html]" );
+			bbfontstyle("[html]", "[/html]");
 			break;
 		case "abbc3_anchor" :
-			bbfontstyle( "[anchor= goto=]", "[/anchor]" );
+			bbfontstyle("[anchor= goto=]", "[/anchor]");
 			break;
 		case "abbc3_code" :
-			bbfontstyle( "[code]", "[/code]" );
+			bbfontstyle("[code]", "[/code]");
 			break;
 		case "abbc3_quote" :
-			bbfontstyle( "[quote]", "[/quote]" );
+			bbfontstyle("[quote]", "[/quote]");
 			break;
 		case "abbc3_spoil" :
-			bbfontstyle( "[spoil]", "[/spoil]" );
+			bbfontstyle("[spoil]", "[/spoil]");
 			break;
 		case "abbc3_hidden" :
-			bbfontstyle( "[hidden]", "[/hidden]" );
+			bbfontstyle("[hidden]", "[/hidden]");
 			break;
 		case "abbc3_mod" :
-			bbfontstyle( "[mod=\"{S_POST_AUTHOR}\"]", "[/mod]" );
+			bbfontstyle("[mod=\"{S_POST_AUTHOR}\"]", "[/mod]");
 			break;
 		case "abbc3_offtopic" :
-			bbfontstyle( "[offtopic]", "[/offtopic]" );
+			bbfontstyle("[offtopic]", "[/offtopic]");
 			break;
 		case "abbc3_scrippet" :
-			bbfontstyle( "[scrippet]", "[/scrippet]" );
+			bbfontstyle("[scrippet]", "[/scrippet]");
 			break;
 		case "abbc3_tabs" :
-			bbfontstyle( "[tabs][tabs: ]", "[/tabs]" );
+			bbfontstyle("[tabs][tabs: ]", "[/tabs]");
 			break;
 		case "abbc3_listb" :
-			bbfontstyle( "[list][*]", "[/list]" );
+			bbfontstyle("[list][*]", "[/list]");
 			break;
 		case "abbc3_listo" :
-			bbfontstyle( "[list=1][*]", "[/list]" );
+			bbfontstyle("[list=1][*]", "[/list]");
 			break;
 		case "abbc3_listitem" :
-			bbfontstyle( "[*]", "" );
+			bbfontstyle("[*]", "");
 			break;
 		case "abbc3_hr" :
-			bbfontstyle( "[hr]", "" );
+			bbfontstyle("[hr]", "");
 			break;
 		case "abbc3_imgshack" :
-			popup( 'http://imageshack.us/', popup_width, popup_height );
-		/*	popup( 'http://ipostimage.org/', popup_width, popup_height );	*/
-		/*	popup( 'http://www.imageposter.com/uploads/?mode=phpbb&forumurl=' + escape(document.location.href), '_imagehost', 'resizable=yes,width=500,height=400', popup_width, popup_height );	*/
+			popup('http://imageshack.us/', popup_width, popup_height);
+		/*	popup('http://ipostimage.org/', popup_width, popup_height);	*/
+		/*	popup('http://www.imageposter.com/uploads/?mode=phpbb&forumurl=' + escape(document.location.href), '_imagehost', 'resizable=yes,width=500,height=400', popup_width, popup_height);	*/
 			break;
 
 /** Custom bbcodes - Start **/
 		case "abbc3_dm" :
-			bbfontstyle( "[dm]", "[/dm]" );
+			bbfontstyle("[dm]", "[/dm]");
 			break;
 		case "abbc3_gamespot" :
-			bbfontstyle( "[gamespot]", "[/gamespot]" );
+			bbfontstyle("[gamespot]", "[/gamespot]");
 			break;
 		case "abbc3_gametrailers" :
-			bbfontstyle( "[gametrailers]", "[/gametrailers]" );
+			bbfontstyle("[gametrailers]", "[/gametrailers]");
 			break;
 		case "abbc3_ignvideo" :
-			bbfontstyle( "[ignvideo]", "[/ignvideo]" );
+			bbfontstyle("[ignvideo]", "[/ignvideo]");
 			break;
 		case "abbc3_putfile" :
-			bbfontstyle( "[Putfile]", "[/Putfile]" );
+			bbfontstyle("[Putfile]", "[/Putfile]");
 			break;
 		case "abbc3_liveleak" :
-			bbfontstyle( "[liveleak]", "[/liveleak]" );
+			bbfontstyle("[liveleak]", "[/liveleak]");
 			break;
 		case "abbc3_nfo" :
-			bbfontstyle( "[nfo]", "[/nfo]" );
+			bbfontstyle("[nfo]", "[/nfo]");
 			break;
 		case "abbc3_glow" :
-			bbfontstyle( "[glow=red]", "[/glow]" );
+			bbfontstyle("[glow=red]", "[/glow]");
 			break;
 		case "abbc3_shadow" :
-			bbfontstyle( "[shadow=blue]", "[/shadow]" );
+			bbfontstyle("[shadow=blue]", "[/shadow]");
 			break;
 		case "abbc3_dropshadow" :
-			bbfontstyle( "[dropshadow=blue]", "[/dropshadow]" );
+			bbfontstyle("[dropshadow=blue]", "[/dropshadow]");
 			break;
 		case "abbc3_blur" :
-			bbfontstyle( "[blur=blue]", "[/blur]" );
+			bbfontstyle("[blur=blue]", "[/blur]");
 			break;
 		case "abbc3_wave" :
-			bbfontstyle( "[wave=blue]", "[/wave]" );
+			bbfontstyle("[wave=blue]", "[/wave]");
 			break;
 		case "abbc3_search" :
-			bbfontstyle( "[search]", "[/search]" );
+			bbfontstyle("[search]", "[/search]");
 			break;
 
 /** Custom bbcodes - End **/
@@ -241,9 +331,7 @@ function bbstyle2( bbcode )
 		case "abbc3_testlink" :
 		case "abbc3_click" :
 		case "abbc3_table" :
-		case "deezer" :
 		/** This bbcodes needs extra data **/
-		case "deezer" :
 		case "abbc3_bbvideo" :
 		case "abbc3_flash" :
 		case "abbc3_flv" :
@@ -259,25 +347,26 @@ function bbstyle2( bbcode )
 		case "abbc3_youtube" :
 		/** Gradient needs his own function **/
 		case "abbc3_grad" :
-		
+
 		/** Extra Custom bbcodes - Start **/
+		case "deezer" :
 
 		/** Extra Custom bbcodes - End **/
-			if ( bbcode == "abbc3_grad" )
+			if (bbcode == "abbc3_grad")
 			{
-				if (theSelection == '' || typeof theSelection == 'undefined' || theSelection == null)
+				if (typeof theSelection == 'undefined' || theSelection == null || theSelection == '')
 				{
-					alert( "{LA_ABBC3_GRAD_MOVER} : {LA_ABBC3_GRAD_MIN_ERROR}" + theSelectionLength );
+					alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_GRAD_MIN_ERROR}");
 					return;
 				}
 
-				if ( theSelectionLength > 120 )
+				if (theSelectionLength > 120)
 				{
-					alert("{LA_ABBC3_GRAD_MOVER} : {LA_ABBC3_GRAD_MAX_ERROR}" + theSelectionLength);
+					alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_GRAD_MAX_ERROR}" + theSelectionLength);
 					return;
 				}
 			}
-			else if ( ( bbcode != "abbc3_table" ) && ( bbcode != "abbc3_upload" ) )
+			else if ( (bbcode != "abbc3_table") && (bbcode != "abbc3_upload") )
 			{
 				if (theSelection)
 				{
@@ -289,12 +378,12 @@ function bbstyle2( bbcode )
 								  || bbcode == 'abbc3_ram'
 								  )	? " {S_ABBC3_VIDEO_WIDTH},{S_ABBC3_VIDEO_HEIGHT}" : ( bbcode == 'abbc3_web') ? ' 100%,100' : '';
 					
-					if ( bbcode == "abbc3_ed2k" )
+					if ( bbcode == "abbc3_ed2k")
 					{
 						bbcode = "abbc3_url";
 					}
 
-					bbcode = bbcode.replace( "abbc3_" , "");
+					bbcode = bbcode.replace("abbc3_" , "");
 					bbfontstyle( '[' + bbcode + bbcode_extra + ']', '[/' + bbcode + ']', '');
 					return ;
 				}
@@ -306,52 +395,52 @@ function bbstyle2( bbcode )
 /** This bbcodes needs wizard - End **/
 
 		case "abbc3_plain" :
-			if (theSelection == '' || typeof theSelection == 'undefined' || theSelection == null)
+			if (typeof theSelection == 'undefined' || theSelection == null || theSelection == '')
 			{
-				alert ( "{LA_ABBC3_PLAIN_MOVER} : {LA_ABBC3_NOSELECT_ERROR}" );
+				alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_NOSELECT_ERROR}");
 				return;
 			}
 			else
 			{
-				var tempSelection = theSelection.replace(/\[[^\]]*\]/gi,"");
-				
-				if ( ( clientVer >= 4 ) && is_ie && is_win )
-				{
-					document.selection.createRange().text = tempSelection;
-				}
-				else if ( textarea.selectionEnd && ( textarea.selectionEnd - textarea.selectionStart > 0 ) )
-				{
-					textarea.value = s1 + tempSelection + s3;
+				try {
+						var tempSelection =  theSelection.replace(/\[(url|email|click)=(.*?)\].*\[\/(url|email|click)\]/gi,"$2");
+						    tempSelection = tempSelection.replace(/\[[^\]]*\]/gi,"");
 
-					textarea.selectionStart = selEnd + open.length + close.length;
-					textarea.selectionEnd = textarea.selectionStart;
-				}
+						if ((clientVer >= 4) && is_ie && is_win)
+						{
+							document.selection.createRange().text = tempSelection;
+						}
+						else if ( textarea.selectionEnd && ( textarea.selectionEnd - textarea.selectionStart > 0 ) )
+						{
+							textarea.value = s1 + tempSelection + s3;
+							var selEnd = textarea.selectionEnd = (textarea.value).substring(0,selStart).length + tempSelection.length;
+						}
+				} catch (e) {}
 			}
 			break;
 		case "abbc3_cut" :
-			if (theSelection == '' || typeof theSelection == 'undefined' || theSelection == null)
+			if (typeof theSelection == 'undefined' || theSelection == null || theSelection == '')
 			{
-				alert ( "{LA_ABBC3_CUT_MOVER} : {LA_ABBC3_NOSELECT_ERROR}" );
+				alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_NOSELECT_ERROR}");
 				return;
 			}
 			else
 			{
-				if ( ( clientVer >= 4 ) && is_ie && is_win )
+				if ((clientVer >= 4) && is_ie && is_win)
 				{
 					document.selection.createRange().text = '';
 				}
-				else if ( textarea.selectionEnd && ( textarea.selectionEnd - textarea.selectionStart > 0 ) )
+				else if (textarea.selectionEnd && (textarea.selectionEnd - textarea.selectionStart > 0))
 				{
-					var selStart = textarea.selectionStart;
-					var selEnd = textarea.selectionEnd;
 					textarea.value = (textarea.value).substring(0,selStart) + (textarea.value).substring( selEnd, selLength );
+					var selEnd = textarea.selectionEnd = (textarea.value).substring(0,selStart).length;
 				}
 			}
 			break;
 		case "abbc3_copy" :
-			if (theSelection == '' || typeof theSelection == 'undefined' || theSelection == null)
+			if (typeof theSelection == 'undefined' || theSelection == null || theSelection == '')
 			{
-				alert ( "{LA_ABBC3_COPY_MOVER} : {LA_ABBC3_NOSELECT_ERROR}" );
+				alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_NOSELECT_ERROR}");
 				return;
 			}
 			else
@@ -360,29 +449,29 @@ function bbstyle2( bbcode )
 			}
 			break;
 		case "abbc3_paste" :
-			if ( copy_paste )
+			if (copy_paste)
 			{
-				bbfontstyle( copy_paste, '' );
+				bbfontstyle(copy_paste, '');
 			}
 			else
 			{
-				alert ( "{LA_ABBC3_PASTE_ERROR}" );
+				alert("{LA_ABBC3_ERROR}" + '\n' + "{LA_ABBC3_PASTE_ERROR}");
 			}
 			break;
 
 /** Else should be a phpbb3 custom bbcode from ACP, so let's phpbb3 take care of it **/
 		default :
-			bbfontstyle( "["+bbcode+"]", "[/"+bbcode+"]" );
+			bbfontstyle("["+bbcode+"]", "[/"+bbcode+"]");
 			break;
 	}
-	
+
 	theSelection = '';
 }
 
 /**
 * Dropdown Color pallette for highlight text & font text
 **/
-function ABBCcolorPalette( bbcode )
+function ABBCcolorPalette(bbcode)
 {
 	var r = 4, g = 4, b = 4;
 	var numberList = new Array(6);
@@ -394,20 +483,20 @@ function ABBCcolorPalette( bbcode )
 	numberList[3] = 'BF';
 	numberList[4] = 'FF';
 
-	for ( r = 4; r > -1; r-- )
+	for (r = 4; r > -1; r--)
 	{
-		for ( g = 4; g > -1; g-- )
+		for (g = 4; g > -1; g--)
 		{
-			for ( b = 4; b > -1; b-- )
+			for (b = 4; b > -1; b--)
 			{
 				color = String(numberList[r]) + String(numberList[g]) + String(numberList[b]);
-				if ( bbcode == 'abbc3_color')
+				if (bbcode == 'abbc3_color')
 				{
-					document.write( '<option style="color:#' + color + '" value="' + color + '" >#' + color + '</option>' );
+					document.write('<option style="color:#' + color + ';" value="' + color + '" >#' + color + '</option>');
 				}
 				else
 				{
-					document.write( '<option style="background-color:#' + color + '" value="' + color + '" >#' + color + '</option>' );
+					document.write('<option style="background-color:#' + color + ';" value="' + color + '" >#' + color + '</option>');
 				}
 			}
 		}
@@ -418,19 +507,27 @@ function ABBCcolorPalette( bbcode )
 * Resize a textbox - START
 * Original function by Disturbed One (http://www.hvmdesign.com/)
 **/
-function textbox_resize( pix, el )
+function textbox_resize(pix, el)
 {
-	if ( typeof el == 'undefined' ) { var el = text_name;  };
+	if (!'{S_ABBC3_BOXRESIZE}')
+	{
+		return false;
+	}
+
+	if (typeof el == 'undefined')
+	{
+		var el = text_name;
+	}
 
 	var cookie		= document.forms[form_name].elements['{S_ABBC3_COOKIE_NAME}'];
-	var box			= document.getElementById(el);
+	var box			= document.forms[form_name].elements[el]; //document.getElementById(el);
 	var new_height	= (parseInt(box.style.height) ? parseInt(box.style.height) : 300) + pix;
 
-	if ( parseInt(cookie.value) != 0 && (typeof pix != 'number' || parseInt(pix) == 0 ) )
+	if (parseInt(cookie.value) !== 0 && (typeof pix != 'number' || parseInt(pix) === 0))
 	{
 		new_height = parseInt(cookie.value) + 'px';
 	}
-	
+
 	if (parseInt(new_height) > 0)
 	{
 		box.style.height = parseInt(new_height) + 'px';
@@ -462,7 +559,7 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 
 	<table id="abbc3posttable" width="100%" border="1" cellspacing="0" cellpadding="0">
 		<tr align="{S_CONTENT_FLOW_BEGIN}">
-			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3<!-- ENDIF --> valign="middle" colspan="2">
+			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3"<!-- ENDIF --> valign="middle" colspan="2">
 				<span class="abbc3_link">
 					<a href="{S_ABBC3_HELP_PAGE}"          rel="external" onclick="window.open(this.href);return false;" title="{L_ABBC3_HELP_TITLE}" ><img src="{S_ABBC3_PATH}/images/help.gif" alt="{L_ABBC3_HELP_TITLE}" title="{L_ABBC3_HELP_TITLE}" /></a>
 					<a href="http://www.mssti.com/phpbb3/" rel="external" onclick="window.open(this.href);return false;" title="{L_ABBC3_HELP_ALT}"   ><img src="{S_ABBC3_PATH}/images/info.gif" alt="{L_ABBC3_HELP_ALT}"   title="{L_ABBC3_HELP_ALT}"   /></a>
@@ -526,15 +623,15 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 			<!-- IF S_ABBC3_SIZE -->
 				<select id="abbc3_size" name="abbc3_size" onchange="bbfontstyle('[size=' + this.form.abbc3_size.options[this.form.abbc3_size.selectedIndex].value + ']', '[/size]'); this.form.abbc3_size.selectedIndex = 0;" onmouseover="helpline2('abbc3_size')" onmouseout="helpline2()" title="{L_ABBC3_SIZE_MOVER}">
 					<option selected="selected" >- {L_ABBC3_SIZE_MOVER} -</option>
-					<option style="font-size:50%"	value="50">{L_FONT_TINY}</option>
-					<option style="font-size:85%"	value="85">{L_FONT_SMALL}</option>
-					<option style="font-size:100%"	value="100">{L_FONT_NORMAL}</option>
+					<option style="font-size: 50%;"	value="50">{L_FONT_TINY}</option>
+					<option style="font-size: 85%;"	value="85">{L_FONT_SMALL}</option>
+					<option style="font-size: 100%;"	value="100">{L_FONT_NORMAL}</option>
 					<!-- IF not MAX_FONT_SIZE or MAX_FONT_SIZE >= 150 -->
-						<option style="font-size:150%"	value="150">{L_FONT_LARGE}</option>
+						<option style="font-size: 150%;"	value="150">{L_FONT_LARGE}</option>
 						<!-- IF not MAX_FONT_SIZE or MAX_FONT_SIZE >= 200 -->
-							<option style="font-size:200%"	value="200">{L_FONT_HUGE}</option>
+							<option style="font-size: 200%;"	value="200">{L_FONT_HUGE}</option>
 							<!-- IF not MAX_FONT_SIZE or MAX_FONT_SIZE >= 300 -->
-								<option style="font-size:300%"	value="300">{L_ABBC3_FONT_GIANT}</option>
+								<option style="font-size: 300%;"	value="300">{L_ABBC3_FONT_GIANT}</option>
 							<!-- ENDIF -->
 						<!-- ENDIF -->
 					<!-- ENDIF -->
@@ -575,7 +672,6 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 				<img src="{S_ABBC3_PATH}/images/dots.gif" alt="" class="btnbbcode3 dot" />
 				<!-- ENDIF -->
 
-
 <!-- BEGIN abbc3_tags -->
 		<!-- IF abbc3_tags.S_ABBC3_BREAK -->
 			<!-- IF S_ABBC3_TAB and not abbc3_tags.S_FIRST_ROW -->
@@ -584,7 +680,7 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 			</td>
 		</tr>
 		<tr align="{S_CONTENT_FLOW_BEGIN}">
-			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3<!-- ENDIF --> valign="middle" colspan="2">
+			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3"<!-- ENDIF --> valign="middle" colspan="2">
 			<!-- IF S_ABBC3_TAB -->
 				<img src="{S_ABBC3_PATH}/images/dots.gif" alt="" class="btnbbcode3 dot" />
 			<!-- ENDIF -->
@@ -605,7 +701,7 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 
 		<!-- IF .custom_tags -->		
 		<tr align="{S_CONTENT_FLOW_BEGIN}">
-			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3<!-- ENDIF --> valign="middle" colspan="2">
+			<td <!-- IF S_ABBC3_BG -->style='background: url("{S_ABBC3_PATH}/images/bg/{S_ABBC3_BG}");'<!-- ELSE -->class="cat bg3"<!-- ENDIF --> valign="middle" colspan="2">
 				<!-- IF S_ABBC3_TAB -->
 				<img src="{S_ABBC3_PATH}/images/dots.gif" alt="" class="btnbbcode3 dot" />
 				<!-- ENDIF -->
@@ -623,7 +719,7 @@ else if (typeof(window.attachEvent) != "undefined") // MSIE
 
 		<tr>
 			<td colspan="2">
-				<textarea readonly="readonly" id="helpbox" name="helpbox" rows="3" cols="170" style="width:100%" class="helpline" >{L_STYLES_TIP}</textarea>
+				<textarea readonly="readonly" id="helpbox" name="helpbox" rows="3" cols="170" style="width: 100%;" class="helpline" >{L_STYLES_TIP}</textarea>
 			</td>
 		</tr>
 

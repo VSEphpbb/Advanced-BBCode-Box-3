@@ -1,7 +1,7 @@
 <?php
 /**
-* @package: phpBB 3.0.5 :: Advanced BBCode box 3 -> root
-* @version: $Id: abbcode_functions.php,v 1.0.12 2009/08/01 09:08:01 leviatan21 Exp $
+* @package: phpBB 3.0.6 :: Advanced BBCode box 3 -> root
+* @version: $Id: abbcode_functions.php, v 3.0.6 2010/01/10 10:01:10 leviatan21 Exp $
 * @copyright: leviatan21 < info@mssti.com > (Gabriel) http://www.mssti.com/phpbb3/
 * @license: http://opensource.org/licenses/gpl-license.php GNU Public License 
 * @author: leviatan21 - http://www.phpbb.com/community/memberlist.php?mode=viewprofile&u=345763
@@ -87,19 +87,22 @@ function abbcode_show_help()
 		// Check phpbb permissions status
 		if (in_array($abbcode_name, $abbcode->need_permissions))
 		{
-			$mode = 'post';
-			$abbode_auth = $abbcode->abbode_auth($abbcode_name, $mode);
+		//	$abbode_auth = $abbcode->abbode_auth($abbcode_name, $mode);
+			if (!$abbode_auth = $abbcode->abbode_auth($abbcode_name, 'helpage'))
+			{
+				continue;
+			}
+
 		}
 
 		// Check ABBC3 groups permission
-		if ($row['bbcode_group'] != 0)
+		if ($row['bbcode_group'])
 		{
-			$abbode_auth = $abbcode->abbode_phpbb_auth($row['bbcode_group']);
-		}
-
-		if (!$abbode_auth)
-		{
-			continue;
+		//	$abbode_auth = $abbcode->abbode_phpbb_auth($row['bbcode_group']);
+			if (!$abbode_auth = $abbcode->abbode_phpbb_auth($row['bbcode_group']))
+			{
+				continue;
+			}
 		}
 
 		if (substr($abbcode_name,0,11) != 'ABBC3_BREAK' && substr($abbcode_name,0,14) != 'ABBC3_DIVISION') // is a breck line or division ?
@@ -151,14 +154,14 @@ function force_parse($text, $bbcode_name)
 }
 
 /**
-* Upload files - Simple way, code from //http://www.php.net/manual/es/features.file-upload.php
+* Upload files - Simple way
 * 
 * @return bbcode tag with link
-* @version 1.0.12
+* @version 3.0.6
 **/
 function abbcode_upload_file($form_name, $text_name)
 {
-	global $config, $template, $user, $phpbb_root_path, $phpEx;
+	global $cache, $template, $user, $config, $phpbb_root_path, $phpEx;
 
 	if (!class_exists('abbcode'))
 	{
@@ -167,28 +170,54 @@ function abbcode_upload_file($form_name, $text_name)
 	$abbcode = new abbcode();
 	$abbcode->abbcode_init();
 
-	$add_file   = (isset($_POST['add_file'])) ? true : false;
-	$upload_dir = $config['upload_path'] . '/';
-
-	$aveilable_types = $config['ABBC3_UPLOAD_EXTENSION'];
-	$types_ary  = preg_split("/[\s,]+/",$aveilable_types);
-
-	$max_size   = (int) $config['ABBC3_UPLOAD_MAX_SIZE'];
-
-	$size_format = ($max_size >= 1048576) ? 'mb' : (($max_size >= 1024) ? 'kb' : 'b');
-
 	$user->add_lang(array('posting', 'mods/abbcode', 'acp/attachments'));
 
-	$template->assign_vars(array(
-		'S_UPLOAD'					=> true,
-		'FORM_NAME'					=> $form_name,
-		'TEXT_NAME'					=> $text_name,
+	// Check permission - Start
+	static $rowset;
+	if (!is_array($rowset))
+	{
+		global $db;
+		$rowset = array();
 
-		'ABBC3_UPLOAD_FILESIZE'		=> ($max_size) ? $max_size : $user->lang['ATTACH_MAX_FILESIZE_EXPLAIN'],
-		'ABBC3_UPLOAD_SIZEFORMAT'	=> ($max_size) ? $size_format : '',
-		'ABBC3_UPLOAD_EXTENSION'	=> $aveilable_types,
-	));
+		$sql = 'SELECT *
+			FROM ' . BBCODES_TABLE . ' 
+			WHERE bbcode_tag = "upload" ';
+		$result = $db->sql_query($sql);
+		$rowset = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+	}
 
+	if (sizeof($rowset))
+	{
+		if (isset($rowset['bbcode_group']) && $rowset['bbcode_group'] && !$abbcode->abbode_phpbb_auth($rowset['bbcode_group']))
+		{
+			trigger_error('ABBC3_UPLOAD_DISALLOWED');
+		}
+	}
+	// Check permission - End
+
+	$upload_dir = $config['upload_path'] . '/';
+	$max_size   = (int) $config['ABBC3_UPLOAD_MAX_SIZE'];
+	$size_format = ($max_size >= 1048576) ? 'mb' : (($max_size >= 1024) ? 'kb' : 'b');
+
+	// Available extensions - Start
+	$available_types	= preg_split("/[\s,]+/", $config['ABBC3_UPLOAD_EXTENSION']);
+
+	$extensions			= $cache->obtain_attach_extensions(true);
+	// Posting page
+	$is_message			= false;
+	$extensions			= ($is_message) ? array_keys($extensions['_allowed_post']) : array_keys($extensions['_allowed_pm']);
+
+	$types_ary			= array_merge($available_types, $extensions);
+	$types_ary			= array_unique($types_ary);
+	asort($types_ary);
+	// Available extensions - End
+
+	$error = array();
+
+	$add_file   = (isset($_POST['add_file'])) ? true : false;
+
+	//	Check if a file was specified
 	if ($add_file)
 	{
 		if (!class_exists('fileupload'))
@@ -196,22 +225,18 @@ function abbcode_upload_file($form_name, $text_name)
 			require($phpbb_root_path . 'includes/functions_upload.' . $phpEx);
 		}
 
+		$fieldata = 'promptbox1';
 		$upload = new fileupload();
-
 		$upload->set_allowed_extensions($types_ary);
+		$file	= $upload->form_upload($fieldata);
 
-		$fileupload = $_FILES['promptbox1'];
-		$fileupload['error'] = array();
-		$file_uploaded = false;
-
-		$file = new filespec($fileupload, $upload);
-
-		$fileupload['name']		 = $user->data['user_id'] . '_' . basename($file->realname);
-		$fileupload['tmp_name']	 = $file->filename;
-		$fileupload['extension'] = strtolower($file->get_extension($file->realname));
-		$fileupload['size']		 = $file->filesize;
-		$fileupload['mimetype']	 = $file->mimetype;
-		$fileupload['image']	 = $file->is_image();
+		$filedata['name']		= basename($file->realname);
+		$filedata['tmp_name']	= $file->filename;
+		$filedata['extension']	= strtolower($file->get_extension($file->realname));
+		$filedata['size']		= $file->filesize;
+		$filedata['mimetype']	= $file->mimetype;
+		$filedata['image']		= $file->is_image();
+		$file_uploaded			= false;
 
 		// Check the first 256 bytes for forbidden content
 		if ($config['check_attachment_content'])
@@ -220,92 +245,140 @@ function abbcode_upload_file($form_name, $text_name)
 
 			if (!$file->check_content($upload->disallowed_content))
 			{
-				$fileupload['error'] = $user->lang['AVATAR_DISALLOWED_CONTENT'];
+				$error[] = $user->lang['AVATAR_DISALLOWED_CONTENT'];
 			}
 		}
 
-		if(!sizeof($fileupload['error']))
+		if (trim($filedata['name'] == ''))
 		{
-			// Check for empty file name
-			if($fileupload['name'])
+			$error[] = $user->lang['ABBC3_UPLOAD_EMPTY'];
+		}
+		else
+		{
+			$file->clean_filename('real', $user->data['user_id'] . '_');
+			if (file_exists($phpbb_root_path . $upload_dir . $file->filename))
 			{
-				// Check for filesize
-				if(($max_size == 0) || ($fileupload['size'] < $max_size))
+				$error[] = sprintf($user->lang['ABBC3_UPLOAD_ALREADY'], $file->filename);
+			}
+		}
+
+		// First fallback if incorrect error
+		if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_INI_SIZE)
+		{	// Value: 1; The uploaded file exceeds the upload_max_filesize directive in php.ini.
+			$error[] = $user->lang['ABBC3_UPLOAD_NOSIZE'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_FORM_SIZE)
+		{	// Value: 2; The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.
+			$error[] = sprintf($user->lang['ABBC3_UPLOAD_NOSIZE'], $file->get('filesize'), $max_filesize);
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_PARTIAL)
+		{	// Value: 3; The uploaded file was only partially uploaded.
+			$error[] = $user->lang['ABBC3_UPLOAD_ERR_PARTIAL'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_NO_FILE)
+		{	// Value: 4; No file was uploaded.
+			$error[] = $user->lang['ABBC3_UPLOAD_EMPTY'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_NO_TMP_DIR)
+		{	// Value: 6; Missing a temporary folder. Introduced in PHP 4.3.10 and PHP 5.0.3.
+			$error[] = $user->lang['ABBC3_UPLOAD_ERR_NO_TMPDIR'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_CANT_WRITE)
+		{	// Value: 7; Failed to write file to disk. Introduced in PHP 5.1.0.
+			$error[] = $user->lang['ABBC3_UPLOAD_ERR_CANTWRITE'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] == UPLOAD_ERR_EXTENSION)
+		{	// Value: 8; File upload stopped by extension. Introduced in PHP 5.2.0.
+			$error[] = $user->lang['ABBC3_UPLOAD_ERR_EXTENSION'];
+		}
+		else if (isset($filedata['error']) && $filedata['error'] != 0)
+		{
+			$error[] = sprintf($user->lang['ABBC3_UPLOAD_UPLOAD_ERROR'], $filedata['error']);
+		}
+		else if (isset($filedata['error']) && $filedata['error'] = 0)
+		{
+			// Check if empty file got uploaded (not catched by is_uploaded_file)
+			if (isset($filedata['size']) && $filedata['size'] == 0)
+			{
+				$error[] = $user->lang['ABBC3_UPLOAD_NO_FILE_SIZE'];
+			}
+			else if ($file->get('filesize') > $max_filesize)
+			{
+				$error[] = sprintf($user->lang['ABBC3_UPLOAD_NOSIZE'], $file->get('filesize'), $max_filesize);
+			}
+			else if (in_array($filedata['extension'], $types_ary) == false)
+			{
+				$error[] = $user->lang['ABBC3_UPLOAD_DISABLED'];
+			}
+
+			// Check our complete quota
+			if ($max_size)
+			{
+				if ($config['upload_dir_size'] + $file->get('filesize') > $max_size)
 				{
-					// Check for file extension
-					if (in_array($fileupload['extension'] , $types_ary))
-					{
-						// Check for file errors
-						// Error 1: The size is bigger than what the server supports.
-						// Error 2: The size is bigger than what the form supports.
-						// Error 3: The file is uploaded PARTLY
-						// Error 4: The file is not uploaded.
-						if (!$fileupload['error'])
-						{
-							// Check if file exist on server
-							if (!file_exists($phpbb_root_path . $upload_dir . $fileupload['name']))
-							{
-								if (!@move_uploaded_file($fileupload['tmp_name'], $phpbb_root_path . $upload_dir . $fileupload['name']))
-								{
-									if (!@copy($fileupload['tmp_name'], $phpbb_root_path . $upload_dir . $fileupload['name']))
-									{
-										$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_NOT_UPLOADED'], $fileupload['name']);
-									}
-									else
-									{
-										$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_UPLOADED'], $fileupload['name']);
-										$file_uploaded = true;
-									}
-								}
-								else
-								{
-									$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_UPLOADED'], $fileupload['name']);
-									$file_uploaded = true;
-								}
-							}
-							else
-							{
-								$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_ALREADY'], $fileupload['name']);
-							}
-						}
-						else
-						{
-							$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_ERROR'], $fileupload['name'], $fileupload["error"]);
-						}
-					}
-					else
-					{
-						$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_DISABLED'], $fileupload['extension']);
-					}
+					$error[] = $user->lang['ATTACH_QUOTA_REACHED'];
 				}
-				else
+			}
+
+			// Check free disk space
+			if ($free_space = @disk_free_space($phpbb_root_path . $upload_dir))
+			{
+				if ($free_space <= $file->get('filesize'))
 				{
-					$fileupload['error'] = sprintf($user->lang['ABBC3_UPLOAD_NOSIZE'], $fileupload['size'], $max_size);
+					$file->error[] = $user->lang['ATTACH_QUOTA_REACHED'];
 				}
+			}
+		}
+
+		if (sizeof($file->error))
+		{
+			$error = array_merge($error, $file->error);
+		}
+		else
+		{
+			$file->move_file($phpbb_root_path . $upload_dir, false, false, false);
+
+			// Not correctly uploaded
+			if (!$file->is_uploaded())
+			{
+				$error[] = $user->lang['ABBC3_UPLOAD_NOT_UPLOADED'];
+			}
+
+			if (sizeof($file->error))
+			{
+				$error = array_merge($error, $file->error);
 			}
 			else
 			{
-				$fileupload['error'] = $user->lang['ABBC3_UPLOAD_EMPTY'];
+				$error[] = sprintf($user->lang['ABBC3_UPLOAD_UPLOADED'], $file->realname);
+				$file_uploaded = true;
+
+				$open_tag  = ($filedata['extension'] == 'swf') ? '[flash]'  : '' ;
+				$close_tag = ($filedata['extension'] == 'swf') ? '[/flash]' : '';
+				$open_tag  = ($filedata['image']) ? '[img]'  : $open_tag ;
+				$close_tag = ($filedata['image']) ? '[/img]' : $close_tag;
+
+				$template->assign_vars(array(
+					'ADDED_FILE'		=> $file_uploaded,
+					'OPEN_TAG'			=> $open_tag,
+					'CLOSE_TAG'			=> $close_tag,
+					'ADDED_FILE_NAME'	=> ($file_uploaded) ? append_sid(generate_board_url() . '/' . $upload_dir . $file->realname) : '',
+				));
 			}
 		}
-
-		$open_tag  = ($fileupload['extension'] == 'swf') ? '[flash]'  : '' ;
-		$close_tag = ($fileupload['extension'] == 'swf') ? '[/flash]' : '';
-		$open_tag  = ($fileupload['image']) ? '[img]'  : $open_tag ;
-		$close_tag = ($fileupload['image']) ? '[/img]' : $close_tag;
-
-		if (sizeof($fileupload['error']))
-		{
-			$template->assign_vars(array(
-				'ADDED_FILE'		=> $file_uploaded,
-				'OPEN_TAG'			=> $open_tag,
-				'CLOSE_TAG'			=> $close_tag,
-				'ADDED_FILE_NAME'	=> ($file_uploaded) ? append_sid(generate_board_url() . '/' . $upload_dir . $fileupload['name']) : '',
-				'ERROR'				=> ($file_uploaded) ? '' : $fileupload['error'],
-			));
-		}
-		$upload->reset_vars();
 	}
+
+	$template->assign_vars(array(
+		'S_UPLOAD'					=> true,
+		'FORM_NAME'					=> $form_name,
+		'TEXT_NAME'					=> $text_name,
+
+		'ERROR'						=> implode('<br />', $error),
+
+		'ABBC3_UPLOAD_FILESIZE'		=> ($max_size) ? $max_size : $user->lang['ATTACH_MAX_FILESIZE_EXPLAIN'],
+		'ABBC3_UPLOAD_SIZEFORMAT'	=> ($max_size) ? $size_format : '',
+		'ABBC3_UPLOAD_EXTENSION'	=> implode(", ", $types_ary),
+	));
 
 	// Output page ...
 	page_header($user->lang['ABBC3_UPLOAD_TITLE']);
@@ -314,7 +387,7 @@ function abbcode_upload_file($form_name, $text_name)
 		'body' => 'posting_abbcode_wizards.html')
 	);
 
-	unset($fileupload);
+	unset($filedata);
 
 	page_footer();
 }
@@ -349,9 +422,10 @@ function abbcode_click_file()
 			WHERE ' . $db->sql_build_array('SELECT', $data_select);
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
 
 	$data_update = array(
-		'clicks' 	=> $row['clicks']+1,
+		'clicks' 	=> $row['clicks'] + 1,
 	);
 
 	$sql = 'UPDATE ' . CLICKS_TABLE . ' 
@@ -403,6 +477,8 @@ function abbcode_wizards($abbcode_bbcode, $form_name, $text_name)
 			{
 				if ($video_data['display'])
 				{
+					$video_name = stripslashes($video_name);
+
 					$example = (isset($video_data['example']) ? $video_data['example'] : $user->lang['ABBC3_NO_EXAMPLE']);
 					$selected = ($video_name == 'youtube.com') ? ' selected="selected"' : '';
 					$video_options .= '<option value="' . $example . '"' . $selected . '>' . $video_name . '</option>';

@@ -95,18 +95,19 @@ RainbowSpan.prototype.moveRainbow = function( )
 **/
 var FadeOut	 = true
 var FadePas	 = 0;
-var FadeMax	 = 255;
+var FadeMax	 = 100; // 255;
 var FadeMin	 = 0;
-var FadeStep = 20;
+var FadeStep = 10; // 20;
 var FadeInt	 = 100;
 var FadeInterval;
 
 function fade_ontimer()
 {
+	var IE = ( window.navigator.userAgent.match(/(^|\W)(MSIE)\s+(\d+)(\.\d+)?/) ) ? true : false;
 	if ( FadeOut )
 	{
 		FadePas += FadeStep;
-		if ( FadePas > FadeMax )
+		if (FadePas > FadeMax)
 		{
 			FadeOut = false;
 		}
@@ -114,19 +115,20 @@ function fade_ontimer()
 	else
 	{
 		FadePas -= FadeStep;
-		if ( FadePas < FadeMin )
+		if (FadePas < FadeMin)
 		{
 			FadeOut = true;
-			clearInterval( FadeInterval );
+			window.clearInterval( FadeInterval );
 		}
 	}
 
-	if ( ( FadePas < FadeMax ) && ( FadePas > FadeMin ) )
+	if ((FadePas < FadeMax) && (FadePas > FadeMin) )
 	{
 		elem = getElementsByClassName("fade_link");
 		for (var i=0; i < elem.length; i++)
 		{
-			elem[i].style.color="rgb(" + FadePas + "," + FadePas + "," + FadePas + ")";
+		/**	elem[i].style.color="rgb(" + FadePas + "," + FadePas + "," + FadePas + ")"; **/
+			if (IE) { elem[i].style.filter = 'alpha(opacity=' + FadePas + ')'; } else { elem[i].style.opacity = elem[i].style.MozOpacity = elem[i].style.KHTMLOpacity = (FadePas/100); }
 		}
 	}
 	FadeInterval = setTimeout( 'fade_ontimer()', FadeInt );

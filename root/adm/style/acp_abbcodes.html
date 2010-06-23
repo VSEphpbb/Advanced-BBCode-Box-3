@@ -1,19 +1,11 @@
 <!-- INCLUDE overall_header.html -->
-<!-- // MOD : MSSTI ABBC3 (v1.0.11) - START -->
+<!-- MOD : MSSTI ABBC3 (v3.0.6) - START //-->
 
-<a name="maincontent"></a>
-
-<!-- IF S_EDIT -->
-
-	<span style="float: {S_CONTENT_FLOW_END};">&laquo; {U_ABBC3} &raquo;</span>
-	
-	<h1>{L_TITLE_EDIT}</h1>
-	
-	<p>{L_TITLE_EXPLAIN}</p>
-	
 	<script type="text/javascript" defer="defer">
 	// <![CDATA[
-	<!-- IF .options -->
+<!-- IF .options -->
+		/** Flag for the resizer method error **/
+		var resizer_error = 0;
 		onload = function()
 		{
 			var form_name = 'acp_abbcodes';
@@ -21,6 +13,7 @@
 			// Check wich options can be used for the resizer method
 			if (!{ADVANCEDBOX_EXIST} || !{HIGHSLIDE_EXIST} || !{LITEBOX_EXIST} || !{GREYBOX_EXIST} || !{LIGHTVIEW_EXIST} || !{IBOX_EXIST} || !{POPBOX_EXIST})
 			{
+				resizer_error = 1;
 				var resizer_options = document.forms[form_name].elements['ABBC3_RESIZE_METHOD'];
 				if (resizer_options)
 				{
@@ -72,27 +65,15 @@
 					}
 				}
 			}
-			else
-			{
-				dE('resizer_error', -1);
-			}
-
-			if ({ADVANCEDBOX_EXIST}){ dE('error_AdvancedBox', -1); }
-			if ({HIGHSLIDE_EXIST})	{ dE('error_HighslideBox', -1); }
-			if ({LITEBOX_EXIST})	{ dE('error_LiteBox', -1); }
-			if ({GREYBOX_EXIST})	{ dE('error_GreyBox', -1); }
-			if ({LIGHTVIEW_EXIST})	{ dE('error_Lightview', -1); }
-			if ({IBOX_EXIST})		{ dE('error_Ibox', -1); }
-			if ({POPBOX_EXIST})		{ dE('error_PopBox', -1); }
 
 			var fieldset = document.getElementsByTagName('fieldset');
+
 			// Skip the first fieldset
 			for (var i = 1; i < fieldset.length; i++)
 			{
 				if (fieldset[i].id)
 				{
-					fieldset[i].style.cursor = 'pointer';
-					abbc_toggle(fieldset[i].id);
+					abbc_toggle(fieldset[i].id, 'true');
 				}
 			}
 		}
@@ -100,8 +81,12 @@
 		/**
 		* Funtion toggle an element visibility - START
 		**/
-		function abbc_toggle(id)
+		function abbc_toggle(id, type)
 		{
+			if (!type)
+			{
+				type = 'false';
+			}
 			var handle = document.getElementById('toggle_dl_' + id);
 
 			if (document.getElementById(id))
@@ -109,6 +94,7 @@
 				var dl = document.getElementsByTagName('dl');
 				for (var i = 0; i < dl.length; i++)
 				{
+					handle.style.cursor = 'pointer';
 					if (dl[i].parentNode.id == id)
 					{
 						if (dl[i].style.display == 'none')
@@ -117,6 +103,12 @@
 							handle.style.backgroundImage = 'url("images/toggle.gif")';
 							handle.style.backgroundRepeat = 'no-repeat';
 							handle.style.backgroundPosition = 'top left';
+
+							/** Show the resizer method error if we need it **/
+							if (id == 'fieldset_6' && type == 'false' && resizer_error)
+							{
+								dE('resizer_error', 1);
+							}
 						}
 						else
 						{
@@ -124,94 +116,20 @@
 							handle.style.backgroundImage = 'url("images/toggle.gif")';
 							handle.style.backgroundRepeat = 'no-repeat';
 							handle.style.backgroundPosition = 'top right';
+
+							/** Hide the resizer method error if we need it **/
+							if (id == 'fieldset_6' && type == 'false' && resizer_error)
+							{
+								dE('resizer_error', -1);
+							}
 						}
 					}
 				}
 			}
 		}
-	<!-- ELSE -->
-		function update_image(newimage)
-		{
-			document.getElementById('newimg').src = (newimage) ? "{ICON_BASEDIR}/images/bg/" + encodeURI(newimage) : 'images/no_image.png';
-		}
-	<!-- ENDIF -->
+<!-- ENDIF -->
 
-	// ]]>
-	
-	</script>
-
-	<!-- IF S_ERROR -->
-	<div class="errorbox">
-		<h3>{L_WARNING}</h3>
-		<p>{ERROR_MSG}</p>
-	</div>
-	<!-- ENDIF -->
-
-	<form id="acp_abbcodes" method="post" action="{U_ACTION}">
-
-	<!-- BEGIN options -->
-
-	<!-- IF options.S_LEGEND -->
-
-		<!-- IF $SHOW_WARNING -->
-			<div id="resizer_error" class="errorbox" style="text-align:{S_CONTENT_FLOW_BEGIN};">
-				<h3 style="text-align: center;">{L_WARNING}</h3>
-				<div id="error_AdvancedBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_ADVANCEDBOX}</div>
-				<div id="error_HighslideBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_HIGHSLIDE}</div>
-				<div id="error_LiteBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_LITEBOX}</div>
-				<div id="error_GreyBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_GREYBOX}</div>
-				<div id="error_Lightview" class="small"><hr />{L_NO_EXIST_EXPLAIN_LIHTVIEW}</div>
-				<div id="error_Ibox" class="small"><hr />{L_NO_EXIST_EXPLAIN_IBOX}</div>
-				<div id="error_PopBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_POPBOX}</div>
-			</div>
-			<!-- DEFINE $SHOW_WARNING = '0' -->
-		<!-- ENDIF -->
-
-		<!-- IF not options.S_FIRST_ROW -->
-		</fieldset>
-		<!-- ENDIF -->
-		<fieldset id="fieldset_{options.S_ROW_COUNT}" >
-		<!-- IF options.S_FIRST_ROW -->
-			<legend>{options.LEGEND}</legend>
-		<!-- ELSE -->
-			<legend onclick="abbc_toggle('fieldset_{options.S_ROW_COUNT}'); return false;" style="vertical-align:top;">{options.LEGEND} &nbsp; <img src="./images/spacer.gif" width="18px" height="18px" id="toggle_dl_fieldset_{options.S_ROW_COUNT}" alt="{L_MENU_TOGGLE}" /></legend>
-		<!-- ENDIF -->
-
-	<!-- ELSE -->
-			<dl>
-				<dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
-				<dd>{options.CONTENT}</dd>
-			</dl>
-	<!-- ENDIF -->
-
-	<!-- IF options.S_ROW_COUNT eq 6 --><!-- DEFINE $SHOW_WARNING = '1' --><!-- ENDIF -->
-
-	<!-- END options -->
-	
-	<!-- IF S_AUTH -->
-		<!-- BEGIN auth_tpl -->
-			{auth_tpl.TPL}
-		<!-- END auth_tpl -->
-	<!-- ENDIF -->
-	
-		</fieldset>
-		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />
-			<input class="button2" type="reset"  id="reset"  name="reset"  value="{L_RESET}" />
-			{S_FORM_TOKEN}
-		</p>
-
-	</form>
-
-<!-- ELSEIF S_BBCODES -->
-
-	<script type="text/javascript" defer="defer">
-	// <![CDATA[
-		function update_image(newimage)
-		{
-			document.getElementById('newimg').src = (newimage) ? "{ICON_BASEDIR}/images/" + encodeURI(newimage) : 'images/no_image.png';
-		}
-
+<!-- IF S_BBCODES -->
 		/** 
 		* Implementing some kind of jump to y position in the current page
 		* Code based off
@@ -251,11 +169,97 @@
 				return true;
 			}
 		}
+<!-- ENDIF -->
+
+		function update_image(newimage)
+		{
+			document.getElementById('newimg').src = (newimage) ? "{ICON_BASEDIR}" + encodeURI(newimage) : 'images/no_image.png';
+		}
 
 	// ]]>
 	
 	</script>
 	
+<a name="maincontent"></a>
+
+<!-- IF S_EDIT -->
+
+	<span style="float: {S_CONTENT_FLOW_END};">&laquo; {U_ABBC3} &raquo;</span>
+	
+	<h1>{L_TITLE_EDIT}</h1>
+	
+	<p>{L_TITLE_EXPLAIN}</p>
+	
+	<!-- IF S_ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR_MSG}</p>
+	</div>
+	<!-- ENDIF -->
+
+	<form id="acp_abbcodes" method="post" action="{U_ACTION}">
+
+	<!-- BEGIN options -->
+
+	<!-- IF options.S_LEGEND -->
+
+		<!-- IF $SHOW_WARNING -->
+			<div id="resizer_error" class="errorbox" style="text-align: {S_CONTENT_FLOW_BEGIN}; display: none; ">
+				<h3 style="text-align: center;">{L_WARNING}</h3>
+				<!-- IF not ADVANCEDBOX_EXIST --><div id="error_AdvancedBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_ADVANCEDBOX}</div><!-- ENDIF -->
+				<!-- IF not HIGHSLIDE_EXIST --><div id="error_HighslideBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_HIGHSLIDE}</div><!-- ENDIF -->
+				<!-- IF not LITEBOX_EXIST --><div id="error_LiteBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_LITEBOX}</div><!-- ENDIF -->
+				<!-- IF not GREYBOX_EXIST --><div id="error_GreyBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_GREYBOX}</div><!-- ENDIF -->
+				<!-- IF not LIGHTVIEW_EXIST --><div id="error_Lightview" class="small"><hr />{L_NO_EXIST_EXPLAIN_LIHTVIEW}</div><!-- ENDIF -->
+				<!-- IF not IBOX_EXIST --><div id="error_Ibox" class="small"><hr />{L_NO_EXIST_EXPLAIN_IBOX}</div><!-- ENDIF -->
+				<!-- IF not POPBOX_EXIST --><div id="error_PopBox" class="small"><hr />{L_NO_EXIST_EXPLAIN_POPBOX}</div><!-- ENDIF -->
+			</div>
+			<!-- DEFINE $SHOW_WARNING = '0' -->
+		<!-- ENDIF -->
+
+		<!-- IF not options.S_FIRST_ROW -->
+		</fieldset>
+		<!-- ENDIF -->
+
+		<fieldset id="fieldset_{options.S_ROW_COUNT}" >
+		<!-- IF options.S_FIRST_ROW -->
+			<legend>{options.LEGEND}</legend>
+		<!-- ELSE -->
+			<legend onclick="abbc_toggle('fieldset_{options.S_ROW_COUNT}'); return false;" style="vertical-align:top;">{options.LEGEND} &nbsp; <img src="./images/spacer.gif" width="18px" height="18px" id="toggle_dl_fieldset_{options.S_ROW_COUNT}" alt="{L_MENU_TOGGLE}" /></legend>
+		<!-- ENDIF -->
+
+	<!-- ELSE -->
+			<dl>
+				<dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
+				<dd>{options.CONTENT}</dd>
+			</dl>
+	<!-- ENDIF -->
+
+	<!-- IF options.S_ROW_COUNT eq 6 --><!-- DEFINE $SHOW_WARNING = '1' --><!-- ENDIF -->
+
+	<!-- END options -->
+	
+	<!-- IF S_AUTH -->
+		<!-- BEGIN auth_tpl -->
+			{auth_tpl.TPL}
+		<!-- END auth_tpl -->
+	<!-- ENDIF -->
+	
+		</fieldset>
+
+		<fieldset>
+			<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+			<p class="submit-buttons">
+				<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+				<input class="button2" type="reset"  id="reset"  name="reset"  value="{L_RESET}" />
+				{S_FORM_TOKEN}
+			</p>
+		</fieldset>
+
+	</form>
+
+<!-- ELSEIF S_BBCODES -->
+
 	<span style="float: {S_CONTENT_FLOW_END};">&laquo; <!-- IF U_BACK --><a href="{U_BACK}">{L_BACK}</a><!-- ELSE -->{U_ABBC3}<!-- ENDIF --> &raquo;</span>
 	
 	<!-- IF S_ERROR -->
@@ -379,5 +383,6 @@
 
 <!-- ENDIF -->
 
-<!-- // MOD : MSSTI ABBC3 (v1.0.11) - END -->
+<!-- MOD : MSSTI ABBC3 (v3.0.6) - END //-->
+
 <!-- INCLUDE overall_footer.html -->

@@ -1,16 +1,29 @@
 // <![CDATA[
-/** @ignore 
-http://www.gtalbot.org/DHTMLSection/ListAllAttributesAndMethodsOfObjects.html
+/**
+* @ignore 
+* Some JavaSccript help : http://www.gtalbot.org/DHTMLSection/ListAllAttributesAndMethodsOfObjects.html
 **/
 
+/** Some css on-the-fly - Start **/
+document.write( "\n\r" + '<style type="text/css" media="all">'+ "\r" + '<!--' + "\r" );
+document.write( '.reimg {' + (ImageResizerMaxWidth_post > 0 ? ' width: ' + ImageResizerMaxWidth_post + 'px;' : '') + (ImageResizerMaxHeight_post > 0 ? ' height: ' + ImageResizerMaxHeight_post + 'px;' : '') + ' visibility: hidden; margin: 5px; border: 1px dotted #000000; }' );
+if (ImageResizerSignature == 1 && (ImageResizerMaxWidth_sig > 0 || ImageResizerMaxHeight_sig > 0))
+{
+	document.write( "\r" + '.signature .reimg {' + (ImageResizerMaxWidth_sig > 0 ? ' width: ' + ImageResizerMaxWidth_sig + 'px;' : '') + (ImageResizerMaxHeight_sig > 0 ? ' height: ' + ImageResizerMaxHeight_sig + 'px;' : '') + ' }' );
+}
 /** Opera doesn't know URL cursor **/
-if ( ! navigator.userAgent.match(/(^|\W)(Opera)\/(\d+)(\.\d+)?/) ) { document.write( '<style type="text/css" media="all"><!--' + "\n\r" + '.resized, .resized-div, .attach_me, .attach_parent, .hoverbox { cursor: url("styles/abbcode/zoomin.cur"), pointer; }'+ "\n\r" + '--></style>'); }
+if ( !navigator.userAgent.match(/(^|\W)(Opera)\/(\d+)(\.\d+)?/) )
+{
+	document.write( "\r" + '.resized, .resized-div, .attach_me, .attach_parent, .hoverbox { cursor: url("./styles/abbcode/zoomin.cur"), pointer; }' );
+}
+document.write( "\r" + '-->' + "\r" + '</style>' + "\n\r");
+/** Some css on-the-fly - End **/
 
 /**************************************************************************************************************************************************************************************************************************
 * AdvancedBox JS - Start
 * This work is open source
 * AdvancedBox for resized images 
-* Paked with : A JavaScript Compressor.  version 3.0 - http://dean.edwards.name/packer/
+* Paked : A JavaScript Compressor.  version 3.0 - http://dean.edwards.name/packer/
 **/
 if ( ImageResizerMode == 'AdvancedBox' )
 {
@@ -507,6 +520,12 @@ function url_clean( url )
 		var valorId2 = valorId1.substring( valorId1.indexOf( 'id' ), valorId1.indexOf( '&' ) );
 		/** Recreate the image url, Ex : http://www.mssti.com/phpbb3/download/file.php?id=65 **/
 		url = valor + '?' + ( valorId2 ? valorId2 : valorId1 );
+		/** MOD : kb - Start
+		if (valorId1.indexOf('kb') != -1)
+		{
+			url += '&kb=1';
+		}
+		 MOD : kb - End **/
 	}
 	return url;
 }
@@ -702,8 +721,8 @@ function ImageResizeronclick( ObjImage, Id )
 };
 /** Image Resizer JS - END **/
 
-if ( ImageResizerMode == 'GreyBox'	) { var gb_imageset = new Array( ); }
-if ( ImageResizerMode == 'Ibox'		) { var ib_imageset = new Array( ); }
+	if ( ImageResizerMode == 'GreyBox'	) { var gb_imageset = new Array(); }
+	if ( ImageResizerMode == 'Ibox'		) { var ib_imageset = new Array(); }
 
 /** Initialize the Resizer **/
 function ImgOnLoad()
@@ -717,7 +736,7 @@ function ImgOnLoad()
 	* Recomended true - Options  false | true
 	* This setting is currently mannaged in the ACP
 	**/
-	var exclude_signatures  = ( ImageResizerSignature == 1 ) ? false : true;
+	var exclude_signatures  = (ImageResizerSignature == 1) ? false : true;
 
 	/**
 	* ABBC3 thumbnail
@@ -776,6 +795,10 @@ function ImgOnLoad()
 		var ContinueResizer = true;
 
 		var img = posted_images_ary[pia];
+
+		// Unhide the image, still using its real (full) dimensions.
+		img.style.visibility = "visible";
+		img.className = img.className.replace(/(^|.*\s)reimg(\s+(.*)|$)/, '$1$3');
 
 		/** Skip to resize signatures **/
 		ImageResizerMaxWidth = ImageResizerMaxWidth_post; ImageResizerMaxHeight = ImageResizerMaxHeight_post;

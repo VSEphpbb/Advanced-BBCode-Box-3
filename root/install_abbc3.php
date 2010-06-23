@@ -1,7 +1,7 @@
 <?php
 /**
-* @package: phpBB3 :: Advanced BBCode box 3 -> install_abbc3
-* @version: $Id: install.php, v 1.0.12 2009/08/01 09:08:01 leviatan21 Exp $
+* @package: phpBB 3.0.6 :: Advanced BBCode box 3 -> install_abbc3
+* @version: $Id: install.php, v 3.0.6 2010/01/10 10:01:10 leviatan21 Exp $
 * @copyright: leviatan21 < info@mssti.com > (Gabriel) http://www.mssti.com/phpbb3/
 * @license: http://opensource.org/licenses/gpl-license.php GNU Public License 
 * @author: leviatan21 - http://www.phpbb.com/community/memberlist.php?mode=viewprofile&u=345763
@@ -45,7 +45,7 @@ $ary_msg_ok	= array();
 $ary_msg_err= array();
 $error_ary['sql'][0] = '';
 
-$mod_version= '1.0.12';
+$mod_version= '3.0.6';
 $page_title = $user->lang['INSTALLER_TITLE'] . sprintf($user->lang['INSTALLER_VERSION'], $mod_version);
 
 switch ($mode)
@@ -585,11 +585,15 @@ switch ($mode)
 			{
 				if (in_array($row['post_id'], $skip_post)) { continue; }
 				if (in_array($row['forum_id'], $skip_forum)) { continue; }
+
+				// This should make the text the same as it would be coming from a new post submitted
 				decode_message($row['post_text'], $row['bbcode_uid']);
+			//	$row['post_text'] = html_entity_decode($row['post_text']);
+				$row['post_text'] = html_entity_decode($row['post_text'], ENT_COMPAT, 'UTF-8');
+				set_var($row['post_text'], $row['post_text'], 'string', true);
 
 				$message_parser = new parse_message();
-			//	$message_parser->message = str_replace('"', '&quot;', html_entity_decode($row['post_text']));
-				$message_parser->message = utf8_normalize_nfc($row['post_text']);
+				$message_parser->message = $row['post_text'];
 				$message_parser->parse((($bbcode_status) ? $row['enable_bbcode'] : false), (($config['allow_post_links']) ? $row['enable_magic_url'] : false), $row['enable_smilies'], $img_status, $flash_status, true, $config['allow_post_links']);
 
 				if ($row['poll_title'] && $row['post_id'] == $row['topic_first_post_id'])
@@ -721,7 +725,7 @@ switch ($mode)
 		}
 		else if ($start_step == 2)
 		{
-			$sql = 'SELECT count(post_id) as post_count FROM ' . POSTS_TABLE;
+			$sql = 'SELECT count(user_id) as post_count FROM ' . USERS_TABLE;
 			$result = $db->sql_query($sql);
 			$post_count = $db->sql_fetchfield('post_count');
 
@@ -758,11 +762,15 @@ switch ($mode)
 			while ($row = $db->sql_fetchrow($result))
 			{
 				if (in_array($row['user_id'], $skip_post)) { continue; }
+
+				// This should make the text the same as it would be coming from a new post submitted
 				decode_message($row['user_sig'], $row['user_sig_bbcode_uid']);
+			//	$row['user_sig'] = html_entity_decode($row['user_sig']);
+				$row['user_sig'] = html_entity_decode($row['user_sig'], ENT_COMPAT, 'UTF-8');
+				set_var($row['user_sig'], $row['user_sig'], 'string', true);
 
 				$message_parser = new parse_message();
-			//	$message_parser->message = str_replace('"', '&quot;', html_entity_decode($row['user_sig']));
-				$message_parser->message = utf8_normalize_nfc($row['user_sig']);
+				$message_parser->message = $row['user_sig'];
 				$message_parser->parse($bbcode_status, $config['allow_sig_links'], $config['allow_sig_smilies'], $img_status, $flash_status, true, $config['allow_sig_links']);
 
 				$sql_data = array(
@@ -840,7 +848,7 @@ switch ($mode)
 		}
 		else if ($start_step == 2)
 		{
-			$sql = 'SELECT count(post_id) as post_count FROM ' . POSTS_TABLE;
+			$sql = 'SELECT count(msg_id) as post_count FROM ' . PRIVMSGS_TABLE;
 			$result = $db->sql_query($sql);
 			$post_count = $db->sql_fetchfield('post_count');
 
@@ -876,11 +884,15 @@ switch ($mode)
 			while ($row = $db->sql_fetchrow($result))
 			{
 				if (in_array($row['msg_id'], $skip_post)) { continue; }
+
+				// This should make the text the same as it would be coming from a new post submitted
 				decode_message($row['message_text'], $row['bbcode_uid']);
+			//	$row['message_text'] = html_entity_decode($row['message_text']);
+				$row['message_text'] = html_entity_decode($row['message_text'], ENT_COMPAT, 'UTF-8');
+				set_var($row['message_text'], $row['message_text'], 'string', true);
 
 				$message_parser = new parse_message();
-			//	$message_parser->message = str_replace('"', '&quot;', html_entity_decode($row['message_text']));
-				$message_parser->message = utf8_normalize_nfc($row['message_text']);
+				$message_parser->message = $row['message_text'];
 				$message_parser->parse((($bbcode_status) ? $row['enable_bbcode'] : false), $row['enable_magic_url'], $row['enable_smilies'], $img_status, $flash_status, true, true);
 
 				$sql_data = array(
@@ -1047,10 +1059,11 @@ function get_abbc3_config()
 
 	// Same default values as root/includes/acp/acp_abbcodes.php -> main()
 	$config_data = array(
-		'ABBC3_MOD'					=> (isset($config['ABBC3_MOD'])				) ? $config['ABBC3_MOD']				: true ,
+		'ABBC3_VERSION'				=> (isset($config['ABBC3_VERSION'])				) ? $config['ABBC3_VERSION']			: '3.0.6' ,
+		'ABBC3_MOD'					=> (isset($config['ABBC3_MOD'])					) ? $config['ABBC3_MOD']				: true ,
 		'ABBC3_PATH'				=> (isset($config['ABBC3_PATH'])				) ? $config['ABBC3_PATH']				: 'styles/abbcode' ,
 		'ABBC3_BG'					=> (isset($config['ABBC3_BG'])					) ? $config['ABBC3_BG']					: 'bg_abbc3.gif' ,
-		'ABBC3_TAB'					=> (isset($config['ABBC3_TAB'])				) ? $config['ABBC3_TAB']				: 1 ,
+		'ABBC3_TAB'					=> (isset($config['ABBC3_TAB'])					) ? $config['ABBC3_TAB']				: 1 ,
 		'ABBC3_BOXRESIZE'			=> (isset($config['ABBC3_BOXRESIZE'])			) ? $config['ABBC3_BOXRESIZE']			: 1 ,
 
 		'ABBC3_RESIZE'				=> (isset($config['ABBC3_RESIZE'])				) ? $config['ABBC3_RESIZE']				: 1 ,
@@ -1063,10 +1076,10 @@ function get_abbc3_config()
 		'ABBC3_MAX_SIG_WIDTH'		=> (isset($config['ABBC3_MAX_SIG_WIDTH'])		) ? $config['ABBC3_MAX_SIG_WIDTH']		: $sig_img_max_width ,
 		'ABBC3_MAX_SIG_HEIGHT'		=> (isset($config['ABBC3_MAX_SIG_HEIGHT'])		) ? $config['ABBC3_MAX_SIG_HEIGHT']		: 0 ,
 
-		'ABBC3_VIDEO_width'			=> (isset($config['ABBC3_VIDEO_width'])		) ? $config['ABBC3_VIDEO_width']		: 425 ,
+		'ABBC3_VIDEO_width'			=> (isset($config['ABBC3_VIDEO_width'])			) ? $config['ABBC3_VIDEO_width']		: 425 ,
 		'ABBC3_VIDEO_height'		=> (isset($config['ABBC3_VIDEO_height'])		) ? $config['ABBC3_VIDEO_height']		: 350 ,
 
-		'ABBC3_UPLOAD_MAX_SIZE'		=> (isset($config['ABBC3_UPLOAD_MAX_SIZE'])	) ? $config['ABBC3_UPLOAD_MAX_SIZE']	: $max_filesize ,
+		'ABBC3_UPLOAD_MAX_SIZE'		=> (isset($config['ABBC3_UPLOAD_MAX_SIZE'])		) ? $config['ABBC3_UPLOAD_MAX_SIZE']	: $max_filesize ,
 		'ABBC3_UPLOAD_EXTENSION'	=> (isset($config['ABBC3_UPLOAD_EXTENSION'])	) ? $config['ABBC3_UPLOAD_EXTENSION']	: 'swf, gif, jpg, jpeg, png, psd, bmp, tif, tiff' ,
 	);
 
@@ -1103,7 +1116,7 @@ function get_abbc3_bbcodes()
 		'dropshadow'	=> array("dropshadow=",		24, 1,	"ABBC3_DROPSHADOW_TIP",	 "[dropshadow={COLOR}]{TEXT}[/dropshadow]", "<div style=\"filter:dropshadow(color=#999999,strength=4);color:{COLOR};height:110%\">{TEXT}</div>", "!\[dropshadow\=([a-z]+|#[0-9abcdef]+)\](.*?)\[/dropshadow\]!ies", '\'[dropshadow=${1}:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${2}\')).\'[/dropshadow:$uid]\'', '!\[dropshadow\=([a-zA-Z]+|#[0-9abcdefABCDEF]+):$uid\](.*?)\[/dropshadow:$uid\]!s', '<div style="filter:dropshadow(color=#999999,strength=4);color:${1};height:110%;">${2}</div>', 0, 0, 0, 1, "dropshadow.gif"),
 		'blur'			=> array("blur=",			25, 1,	"ABBC3_BLUR_TIP",		 "[blur={COLOR}]{TEXT}[/blur]", "<div style=\"filter:Blur(strength=7);color:{COLOR};height:110%\">{TEXT}</div>", "!\[blur\=([a-z]+|#[0-9abcdef]+)\](.*?)\[/blur\]!ies", '\'[blur=${1}:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${2}\')).\'[/blur:$uid]\'', '!\[blur\=([a-zA-Z]+|#[0-9abcdefABCDEF]+):$uid\](.*?)\[/blur:$uid\]!s', '<div style="filter:Blur(strength=7);color:${1};height:110%;">${2}</div>', 0, 0, 0, 1, "blur.gif"),
 		'wave'			=> array("wave=",			26, 1,	"ABBC3_WAVE_TIP",		 "[wave={COLOR}]{TEXT}[/wave]", "<div style=\"filter:Wave(strength=2);color:{COLOR};height:110%\">{TEXT}</div>", "!\[wave\=([a-z]+|#[0-9abcdef]+)\](.*?)\[/wave\]!ies", '\'[wave=${1}:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${2}\')).\'[/wave:$uid]\'', '!\[wave\=([a-zA-Z]+|#[0-9abcdefABCDEF]+):$uid\](.*?)\[/wave:$uid\]!s', '<div style="filter:Wave(strength=2);color:${1};height:110%;">${2}</div>', 0, 0, 0, 1, "wave.gif"),
-		'fade'			=> array("fade",			27, 1,	"ABBC3_FADE_TIP",		 "[fade]{TEXT}[/fade]", "<span class=\"fade_link\">{TEXT}</span> <script type=\"text/javascript\">fade_ontimer();</script>", "!\[fade\](.*?)\[/fade\]!ies", '\'[fade:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${1}\')).\'[/fade:$uid]\'', '!\[fade:$uid\](.*?)\[/fade:$uid\]!s', '<span class="fade_link">${1}</span> <script type="text/javascript">fade_ontimer();</script>', 1, 1, 1, 1, "fade.gif"),
+		'fade'			=> array("fade",			27, 1,	"ABBC3_FADE_TIP",		 "[fade]{TEXT}[/fade]", "<div class=\"fade_link\">{TEXT}</div> <script type=\"text/javascript\">fade_ontimer();</script>", "!\[fade\](.*?)\[/fade\]!ies", '\'[fade:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${1}\')).\'[/fade:$uid]\'', '!\[fade:$uid\](.*?)\[/fade:$uid\]!s', '<div class="fade_link">${1}</div> <script type="text/javascript">fade_ontimer();</script>', 1, 1, 1, 1, "fade.gif"),
 		'grad'			=> array("grad",			28,	0,	"ABBC3_GRAD_TIP",		 ".", ".", ".", ".", ".", ".", 1, 1, 1, 1, "grad.gif"),
 		'division2'		=> array("division2",		29,	0,	"ABBC3_DIVISION",		 ".", ".", ".", ".", ".", ".", 1, 1, 1, 1, "dots.gif"),
 		'align justify'	=> array("align=justify",	30, 1,	"ABBC3_JUSTIFY_TIP",	 "[align=justify]{TEXT}[/align]", "<div style=\"text-align:justify\">{TEXT}</div>", "!\[align\=justify\](.*?)\[/align\]!ies", '\'[align=justify:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${1}\')).\'[/align:$uid]\'', '!\[align\=justify:$uid\](.*?)\[/align:$uid\]!si', '<div style="text-align:justify;">${1}</div>', 1, 1, 1, 1, "justify.gif"),
@@ -1135,7 +1148,8 @@ function get_abbc3_bbcodes()
 		'email'			=> array("email",			56,	0,	"ABBC3_EMAIL_TIP",		 ".", ".", ".", ".", ".", ".", 1, 1, 1, 1, "email.gif"),
 		'web'			=> array("web",				57, 1,	"ABBC3_WEB_TIP",		 "[web{TEXT}]{URL}[/web]", "<a src=\"{URL}\">{TEXT}</a>", "!\[web(=| )?(.*?)\](.*?)\[/web\]!ies", '\'[web${1}${2}:$uid]\'.(!preg_match(\'#^[a-z][a-z\d+\-.]*:/{2}#i\', trim(\'${3}\')) ? \'http://${3}\' : \'${3}\').\'[/web:$uid]\'', '!\[web((=| )?(width=)?([0-9]?[0-9]?[0-9][(%|\w+)?])(,| )(height=)?([0-9]?[0-9]?[0-9][(%|\w+)?]))?:$uid\](.*?)\[/web:$uid\]!s', '<iframe width="${4}" height="${7}" src="${8}" security="restricted" style="font-size: 2px;"></iframe>', 0, 0, 0, 1, "web.gif"),
 		'ed2k'			=> array("url=",			58,	0,	"ABBC3_ED2K_TIP",		 ".", ".", ".", ".",".", ".", 1, 1, 0, 1, "emule.gif"),
-		'img'			=> array("img=",			59, 1,	"ABBC3_IMG_TIP",		 "[img{TEXT}]{URL}[/img]", "<img src=\"{URL}\" alt=\"{L_IMAGE}\" />", "!\[img(\\=| )?(left|center|right)?\](.*?)\[/img\]!ies", '\'[img${1}${2}:$uid]${3}[/img:$uid]\'', '!\[img(=| )?(left|center|right)?:$uid\](.*?)\[/img:$uid\]!ies', '$this->img_pass(\'$2\',\'$3\')', 1, 1, 1, 1, "img.gif"),
+//		'img'			=> array("img=",			59, 1,	"ABBC3_IMG_TIP",		 "[img{TEXT}]{URL}[/img]", "<img src=\"{URL}\" alt=\"{L_IMAGE}\" />", "!\[img(\\=| )?(left|center|right)?\](.*?)\[/img\]!ies", '\'[img${1}${2}:$uid]${3}[/img:$uid]\'', '!\[img(=| )?(left|center|right)?:$uid\](.*?)\[/img:$uid\]!ies', '$this->img_pass(\'$2\',\'$3\')', 1, 1, 1, 1, "img.gif"),
+		'img'			=> array("img=",			59, 1,	"ABBC3_IMG_TIP",		 "[img{TEXT}]{URL}[/img]", "<img src=\"{URL}\" alt=\"{L_IMAGE}\" />", "!\[img\\=(left|center|right)?\](.*?)\[/img\]!ies", '\'[img=${1}:$uid]${2}[/img:$uid]\'', '!\[img=(left|center|right)?:$uid\](.*?)\[/img:$uid\]!ies', '$this->img_pass(\'$1\',\'$2\')', 1, 1, 1, 1, "img.gif"),
 		'thumbnail'		=> array("thumbnail",		60, 1,	"ABBC3_THUMBNAIL_TIP",	 "[thumbnail{TEXT}]{URL}[/thumbnail]", "<img src=\"{URL}\" border=\"0\" align=\"{TEXT}\"/>", "!\[thumbnail(\\=(left|center|right))?\](.*?)\[/thumbnail\]!ies", '\'[thumbnail${1}:$uid]${3}[/thumbnail:$uid]\'', '!\[thumbnail(\\=(left|center|right))?:$uid\](.*?)\[/thumbnail:$uid\]!ies', '$this->thumb_pass(\'$2\',\'$3\')', 1, 1, 1, 1, "thumb.gif"),
 		'imgshack'		=> array("imgshack",		61,	0,	"ABBC3_IMGSHACK_MOVER",	 ".", ".", ".", ".", ".", ".", 1, 1, 1, 1, "imgshack.gif"),
 		'rapidshare'	=> array("rapidshare",		62, 1,	"ABBC3_RAPIDSHARE_TIP",	 "[rapidshare]{URL}[/rapidshare]", "<a src=\"{URL}\">{URL}</a>", "!\[rapidshare\](.*?)\[/rapidshare\]!ies", '\'[rapidshare:$uid]${1}[/rapidshare:$uid]\'', '!\[rapidshare:$uid\](.*?)\[/rapidshare:$uid\]!ies', '$this->rapidshare_pass(\'$1\')', 0, 0, 0, 1, "rapidshare.gif"),
@@ -1145,7 +1159,8 @@ function get_abbc3_bbcodes()
 		'division4'		=> array("division4",		66,	0,	"ABBC3_DIVISION",		 ".", ".", ".", ".", ".", ".", 1, 1, 1, 1, "dots.gif"),
 		'BBvideo'		=> array("BBvideo",			67, 1,	"ABBC3_BBVIDEO_TIP",	 "[BBvideo{TEXT1}]{TEXT2}[/BBvideo]", "<a src=\"{TEXT1}\">{TEXT2}</a>", "!\[BBvideo(\\=| )?(.*?)\](.*?)\[/BBvideo\]!ies", '\'[BBvideo${1}${2}:$uid]${3}[/BBvideo:$uid]\'', '!\[BBvideo((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/BBvideo:$uid\]!ies', '$this->BBvideo_pass(\'$8\', \'$4\', \'$7\')', 1, 0, 0, 1, "bbvideo.gif"),
 		'scrippet'		=> array("scrippet",		68, 1,	"ABBC3_SCRIPPET",		 "[scrippet]{TEXT}[/scrippet]", "<div id=\"scrippet\"><div class=\"scrippet-shadow\"><div class=\"inner-shadow\">{SCRIPPET_TEXT}<br /></div></div></div>", "!\[scrippet\](.*?)\[/scrippet\]!ies", '\'[scrippet:$uid]\'.str_replace(array("\r\n", \'\"\', \'\\\'\', \'(\', \')\'), array("\n", \'"\', \'&#39;\', \'&#40;\', \'&#41;\'), trim(\'${1}\')).\'[/scrippet:$uid]\'', '!\[scrippet:$uid\](.*?)\[/scrippet:$uid\]!ies', '$this->scrippets_pass(\'$1\')', 0, 0, 0, 1, "scrippet.gif"),
-		'flash'			=> array("flash",			69, 1,	"ABBC3_FLASH_TIP",		 "[flash{TEXT}]{URL}[/flash]", "<a src=\"{URL}\">{TEXT}</a>", "!\[flash(=| )?(.*?)\](.*?)\[/flash\]!ies", '\'[flash${1}${2}:$uid]${3}[/flash:$uid]\'', '!\[flash((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/flash:$uid\]!s', '<object classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=5,0,0,0" width="${4}" height="${7}"><param name="movie" value="${8}" /><param name="play" value="true" /><param name="loop" value="true" /><param name="quality" value="high" /><param name="allowScriptAccess" value="never" /><param name="allowNetworking" value="internal" /><embed src="${8}" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="${4}" height="${7}" play="true" loop="true" quality="high" allowscriptaccess="never" allownetworking="internal"></embed></object><br />', 0, 0, 0, 1, "flash.gif"),
+//		'flash'			=> array("flash",			69, 1,	"ABBC3_FLASH_TIP",		 "[flash{TEXT}]{URL}[/flash]", "<a src=\"{URL}\">{TEXT}</a>", "!\[flash(=| )?(.*?)\](.*?)\[/flash\]!ies", '\'[flash${1}${2}:$uid]${3}[/flash:$uid]\'', '!\[flash((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/flash:$uid\]!s', '<object classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=5,0,0,0" width="${4}" height="${7}"><param name="movie" value="${8}" /><param name="play" value="true" /><param name="loop" value="true" /><param name="quality" value="high" /><param name="allowScriptAccess" value="never" /><param name="allowNetworking" value="internal" /><embed src="${8}" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="${4}" height="${7}" play="true" loop="true" quality="high" allowscriptaccess="never" allownetworking="internal"></embed></object><br />', 0, 0, 0, 1, "flash.gif"),
+		'flash'			=> array("flash",			69, 1,	"ABBC3_FLASH_TIP",		 "[flash{TEXT}]{URL}[/flash]", "<a src=\"{URL}\">{TEXT}</a>", "!\[flash(=| )?(.*?)\](.*?)\[/flash\]!ies", '\'[flash${1}${2}:$uid]${3}[/flash:$uid]\'', '!\[flash((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/flash:$uid\]!ies', '$this->flash_pass(\'$4\', \'$7\', \'$8\')', 0, 0, 0, 1, "flash.gif"),
 		'flv'			=> array("flv",				70, 1,	"ABBC3_FLV_TIP",		 "[flv{TEXT}]{URL}[/flv]", "<a src=\"{URL}\">{TEXT}</a>", "!\[flv(\\=| )?(.*?)\](.*?)\[/flv\]!ies", '\'[flv${1}${2}:$uid]${3}[/flv:$uid]\'', '!\[flv((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/flv:$uid\]!s', '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="${4}" height="${7}" id="flvPlayer" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ><param name="movie" value="./images/player.swf" /><param name="allowFullScreen" value="true" /><param name="FlashVars" value="movie=${8}&fgcolor=autoload=off&fgcolor=0xff0000&autoload=off&volume=70" /><embed width="${4}" height="${7}" src="./images/player.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" allowFullScreen="true" FlashVars="movie=${8}&fgcolor=autoload=off&fgcolor=0xff0000&autoload=off&volume=70" type="application/x-shockwave-flash" ></embed></object><br />', 0, 0, 0, 1, "flashflv.gif"),
 		'video'			=> array("video",			71, 1,	"ABBC3_VIDEO_TIP",		 "[video{TEXT}]{URL}[/video]", "<a src=\"{URL}\">{TEXT}</a>", "!\[video(\\=| )?(.*?)\](.*?)\[/video\]!ies", '\'[video${1}${2}:$uid]${3}[/video:$uid]\'', '!\[video((=| )?(width=)?([0-9]?[0-9]?[0-9])(,| )(height=)?([0-9]?[0-9]?[0-9]))?:$uid\](.*?)\[/video:$uid\]!s', '<object classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" id="player_${8}" width="${4}" height="${7}"><param name="url" value="${8}" /><param name="src" value="${8}" /><param name="showcontrols" value="1" /><param name="autostart_step" value="0" /><param name="autostart" value="0" /><!--[if !IE]>--><object type="video/x-ms-wmv" data="${8}" width="${4}" height="${7}" ><param name="src" value="${8}" /><param name="autostart_step" value="0" /><param name="autostart" value="0" /><param name="controller" value="1" /></object><!--<![endif]--></object><br />', 0, 0, 0, 1, "video.gif"),
 		'stream'		=> array("stream",			72, 1,	"ABBC3_STREAM_TIP",		 "[stream]{URL}[/stream]", "<a src=\"{URL}\">{URL}</a>", "!\[stream\](.*?)\[/stream\]!ies", '\'[stream:$uid]${1}[/stream:$uid]\'', '!\[stream:$uid\](.*?)\[/stream:$uid\]!s', '<object width="320" height="45" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" id="wmstream_${1}"><param name="url" value="${1}" /><param name="showcontrols" value="1" /><param name="showdisplay" value="0" /><param name="showstatusbar" value="0" /><param name="autosize" value="1" /><param name="autostart_step" value="0" /><param name="autostart" value="0" /><param name="visible" value="1" /><param name="animationstart_step" value="0" /><param name="loop" value="0" /><param name="src" value="${1}" /><!--[if !IE]>--><object width="320" height="45" type="video/x-ms-wmv" data="${1}"><param name="src" value="${1}" /><param name="controller" value="1" /><param name="showcontrols" value="1" /><param name="showdisplay" value="0" /><param name="showstatusbar" value="0" /><param name="autosize" value="1" /><param name="autostart_step" value="0" /><param name="autostart" value="0" /><param name="visible" value="1" /><param name="animationstart_step" value="0" /><param name="loop" value="0" /></object><!--<![endif]--></object><br />', 0, 0, 0, 1, "sound.gif"),
@@ -1154,7 +1169,7 @@ function get_abbc3_bbcodes()
 		'gvideo'		=> array("gvideo",			75, 1,	"ABBC3_GVIDEO_TIP",		 "[GVideo]{URL}[/GVideo]", "<a src=\"{URL}\">{URL}</a>", "!\[Gvideo\]http://video.google.(.*?)/videoplay\?docid\=(.*?)\[/Gvideo\]!ies", '\'[Gvideo:$uid]http://video.google.${1}/videoplay?docid=${2}[/Gvideo:$uid]\'', '!\[Gvideo:$uid\]http://video.google.(.*?)/videoplay\?docid\=(.*?)\[/Gvideo:$uid\]!s', '<object classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=5,0,0,0" width="425" height="350"><param name="movie" value="http://video.google.$1/googleplayer.swf?docid=$2" /><param name="play" value="false" /><param name="loop" value="false" /><param name="quality" value="high" /><param name="allowScriptAccess" value="never" /><param name="allowNetworking" value="internal" /><embed src="http://video.google.$1/googleplayer.swf?docid=$2" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="425" height="350" play="false" loop="false" quality="high" allowscriptaccess="never" allownetworking="internal"></embed></object><br />', 0, 0, 0, 1, "googlevid.gif"),
 		'youtube'		=> array("youtube",			76, 1,	"ABBC3_YOUTUBE_TIP",	 "[youtube]{URL}[/youtube]", "<a src=\"{URL}\">{URL}</a>", "!\[youtube\]http://((.*?)?)youtube.com/watch\?v\=([0-9A-Za-z-_]{11})[^[]*\[/youtube\]!ies", '\'[youtube:$uid]http://${1}youtube.com/watch?v=${3}[/youtube:$uid]\'', '!\[youtube:$uid\]http://((.*?)?)youtube.com/watch\?v\=([0-9A-Za-z-_]{11})[^[]*\[/youtube:$uid\]!s', '<object width="425" height="350"><param name="movie" value="http://${2}youtube.com/v/${3}" /><param name="wmode" value="transparent" /><embed src="http://${2}youtube.com/v/${3}" type="application/x-shockwave-flash" wmode="transparent" width="425" height="350"></embed></object><br />', 0, 0, 0, 1, "youtube.gif"),
 		'veoh'			=> array("veoh", 			77, 1,	"ABBC3_VEOH_TIP",		 "[veoh]{URL}[/veoh]", "<a src=\"{URL}\">{URL}</a>", "!\[veoh\]http://(.*?).veoh.com/videos/(.*?)\[/veoh\]!ies", '\'[veoh:$uid]http://${1}.veoh.com/videos/${2}[/veoh:$uid]\'', '!\[veoh:$uid\]http://(.*?).veoh.com/videos/(.*?)\[/veoh:$uid\]!s', '<embed src="http://${1}.veoh.com/videodetails2.swf?permalinkId=${2}&id=anonymous&player=videodetailsembedded&videoAutoPlay=0" allowFullScreen="true" width="540" height="438" bgcolor="#000000" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed><br />', 0, 0, 0, 1, "veoh.gif"),
-		'collegehumor'	=> array("collegehumor", 	78, 1,	"ABBC3_COLLEGE_TIP",	 "[collegehumor]{URL}[/collegehumor]", "<a src=\"{URL}\">{URL}</a>", "!\[collegehumor\]http://www.collegehumor.com/video:(.*?)\[/collegehumor\]!ies", '\'[collegehumor:$uid]http://www.collegehumor.com/video:${1}[/collegehumor:$uid]\'', '!\[collegehumor:$uid\]http://www.collegehumor.com/video:(.*?)\[/collegehumor:$uid\]!s', '<object type="application/x-shockwave-flash" data="http://www.collegehumor.com/moogaloop/moogaloop.swf?clip_id=${1}&fullscreen=1" width="480" height="360" ><param name="allowfullscreen" value="true" /><param name="movie" quality="best" value="http://www.collegehumor.com/moogaloop/moogaloop.swf?clip_id=${1}&fullscreen=1" /></object><br />', 0, 0, 0, 1, "collegehumor.gif"),
+		'collegehumor'	=> array("collegehumor", 	78, 1,	"ABBC3_COLLEGE_TIP",	 "[collegehumor]{URL}[/collegehumor]", "<a src=\"{URL}\">{URL}</a>", "!\[collegehumor\]http://www.collegehumor.com/video:(.*?)\[/collegehumor\]!ies", '\'[collegehumor:$uid]http://www.collegehumor.com/video:${1}[/collegehumor:$uid]\'', '!\[collegehumor:$uid\]http://www.collegehumor.com/video:(.*?)\[/collegehumor:$uid\]!s', '<object type="application/x-shockwave-flash" data="http://www.collegehumor.com/moogaloop/moogaloop.swf?clip_id=${1}&fullscreen=1" width="480" height="360" ><param name="movie" quality="best" value="http://www.collegehumor.com/moogaloop/moogaloop.swf?clip_id=${1}&fullscreen=1" /><param name="allowfullscreen" value="true" /></object><br />', 0, 0, 0, 1, "collegehumor.gif"),
 		'dm'			=> array("dm", 				79, 1,	"ABBC3_DMOTION_TIP",	 "[dm]{URL}[/dm]", "<a src=\"{URL}\">{URL}</a>", "!\[dm\](.*?)\[/dm\]!ies", '\'[dm:$uid]${1}[/dm:$uid]\'', '!\[dm:$uid\]http://www.dailymotion.com/(.*?)/(.*?)\[/dm:$uid\]!s', '<object width="420" height="352"><param name="movie" value="http://www.dailymotion.com/swf/${2}" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="never" /><embed src="http://www.dailymotion.com/swf/${2}" type="application/x-shockwave-flash" width="420" height="352" allowFullScreen="true" allowScriptAccess="never"></embed></object><br />', 0, 0, 0, 1, "dailymotion.gif"),
 		'gamespot'		=> array("gamespot",		80, 1,	"ABBC3_GAMESPOT_TIP",	 "[gamespot]{URL}[/gamespot]", "<a src=\"{URL}\">{URL}</a>", "!\[gamespot\]http://www.gamespot.com/video/(.*?)/(.*?)\[/gamespot\]!ies", '\'[gamespot:$uid]http://www.gamespot.com/video/${1}/${2}[/gamespot:$uid]\'', '!\[gamespot:$uid\]http://www.gamespot.com/video/(.*?)/(.*?)\[/gamespot:$uid\]!s', '<embed id="mymovie" width="432" height="355" flashvars="paramsURI=http%3A%2F%2Fwww%2Egamespot%2Ecom%2Fpages%2Fvideo%5Fplayer%2Fproteus%5Fxml%2Ephp%3Fadseg%3D%26adgrp%3D%26sid%3D${2}%26pid%3D${1}%26mb%3D%26onid%3D%26nc%3D1202626246593%26embedded%3D1%26showWatermark%3D0%26autoPlay%3D0" allowfullscreen="true" allowscriptaccess="never" quality="high" name="mymovie" src="http://image.com.com/gamespot/images/cne_flash/production/media_player/proteus/gs/proteus_embed.swf" type="application/x-shockwave-flash"/><br />', 0, 0, 0, 1, "gamespot.gif"),
 		'gametrailers'	=> array("gametrailers",	81, 1,	"ABBC3_GAMETRAILERS_TIP","[gametrailers]{URL}[/gametrailers]", "<a src=\"{URL}\">{URL}</a>", "!\[gametrailers\]http://www.gametrailers.com/player/(.*?).html\[/gametrailers\]!ies", '\'[gametrailers:$uid]http://www.gametrailers.com/player/${1}.html[/gametrailers:$uid]\'', '!\[gametrailers:$uid\]http://www.gametrailers.com/player/(.*?).html\[/gametrailers:$uid\]!s', '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" id="gtembed" width="480" height="392"><param name="allowScriptAccess" value="never" /><param name="allowFullScreen" value="true" /><param name="movie" value="http://www.gametrailers.com/remote_wrap.php?mid=${1}" /><param name="quality" value="high" /><embed src="http://www.gametrailers.com/remote_wrap.php?mid=${1}" swLiveConnect="true" name="gtembed" align="middle" allowScriptAccess="never" allowFullScreen="true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="480" height="392"></embed></object><br />', 0, 0, 0, 1, "gametrailers.gif"),

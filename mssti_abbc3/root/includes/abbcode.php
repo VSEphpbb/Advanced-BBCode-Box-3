@@ -2250,16 +2250,16 @@ class abbcode
 				$video_image = (file_exists($video_image)) ? '<img src="' . $video_image . '" class="postimage" alt="" width="20" height="20" /> ' : '';
 
 				//create a direct link to the embedded video site or file
-				$video_link_string = '%1$s <a href="' . $in . '" onclick="window.open(this.href);return false;" >%2$s</a>';
+				$video_link_string = '%1$s <a href="%2$s" onclick="window.open(this.href);return false;" >%3$s</a>';
 				if ($video_data['id'] > 200)
 				{
 					// this is for direct file formats, they have an ID of 200+, get the extension
-					$video_link = sprintf($video_link_string, $user->lang['ABBC3_BBVIDEO_FILE'] . ':', pathinfo(parse_url($in, PHP_URL_PATH ), PATHINFO_EXTENSION));
+					$video_link = sprintf($video_link_string, $user->lang['ABBC3_BBVIDEO_FILE'] . ':', $in, pathinfo(parse_url($in, PHP_URL_PATH ), PATHINFO_EXTENSION));
 				}
 				else
 				{
 					// this is the link back to the video site
-					$video_link = sprintf($video_link_string, $user->lang['ABBC3_BBVIDEO_WATCH'], $video_name);
+					$video_link = sprintf($video_link_string, $user->lang['ABBC3_BBVIDEO_WATCH'], $in, $video_name);
 				}
 
 				// Dump everything we've done into the BBvideo html template

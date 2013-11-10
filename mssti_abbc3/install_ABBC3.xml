@@ -30,13 +30,20 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>3.0.13</mod-version>
+		<mod-version>3.0.14</mod-version>
 		<installation>
 			<level>intermediate</level>
 			<time>1200</time>
 			<target-version>3.0.12</target-version>
 		</installation>
 		<history>
+			<entry>
+				<date>2013-08-14</date>
+				<rev-version>3.0.14</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[[Fix] Fix a problem with BBvideo URLs containing %20 breaking sprintf() functions.]]></change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2013-08-14</date>
 				<rev-version>3.0.13</rev-version>
@@ -215,6 +222,7 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 			<link type="contrib" href="contrib/update_3.0.10_to_3.0.13.xml" lang="en">Update (3.0.10 to 3.0.13)</link>
 			<link type="contrib" href="contrib/update_3.0.11_to_3.0.13.xml" lang="en">Update (3.0.11 to 3.0.13)</link>
 			<link type="contrib" href="contrib/update_3.0.12_to_3.0.13.xml" lang="en">Update (3.0.12 to 3.0.13)</link>
+			<link type="contrib" href="contrib/update_3.0.13_to_3.0.14.xml" lang="en">Update (3.0.13 to 3.0.14)</link>
 			<link type="uninstall" href="contrib/uninstall_ABBC3.xml" lang="en">Uninstall ABBC3</link>
 		</link-group>
 	</header>

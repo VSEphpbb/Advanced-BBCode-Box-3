@@ -126,7 +126,10 @@ $versions = array(
 			// We have some BBCodes to update
 			'abbc3_bbcode_handler',
 		),
-		
+	),
+
+	// Version 3.0.14
+	'3.0.14'		=> array(
 		// purge the cache
 		'cache_purge' => '',
 	),

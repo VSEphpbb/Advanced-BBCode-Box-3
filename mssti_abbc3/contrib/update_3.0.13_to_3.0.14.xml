@@ -44,6 +44,7 @@
 		<copy>
 			<file from="root/includes/*.*" to="includes/*.*"/>
 			<file from="root/install_abbc3.php" to="install_abbc3.php"/>
+			<file from="root/styles/abbcode/abbcode.css" to="styles/abbcode/abbcode.css"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<php-installer><![CDATA[install_abbc3.php]]></php-installer>

@@ -426,7 +426,7 @@ div.Rainbow {
 	line-height: 70%;
 	letter-spacing: -2.5px;
 	font-size: 9px;
-	font-family: "Courier New";
+	font-family: "Courier New", monospace;
 	background-color: #ffffff;
 }
 /* NFO bbcode - END */

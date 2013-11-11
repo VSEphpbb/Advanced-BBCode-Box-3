@@ -38,10 +38,12 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 		</installation>
 		<history>
 			<entry>
-				<date>2013-08-14</date>
+				<date>2013-11-11</date>
 				<rev-version>3.0.14</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Fix] Fix a problem with BBvideo URLs containing %20 breaking sprintf() functions.]]></change>
+					<change><![CDATA[[Change] Removed .ram BBcodes (format is dead).]]></change>
+					<change><![CDATA[[Change] Removed .mp3 BBcodes (Google Reader MP3 player was discontinued).]]></change>
 				</changelog>
 			</entry>
 			<entry>

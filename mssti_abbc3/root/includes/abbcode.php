@@ -2003,22 +2003,6 @@ class abbcode
 			// available ids: 67-200
 
 			'file' => array(),
-			'(mp4|m4v)' => array(
-				'id'		=> 209,
-				'image'		=> 'mov.gif',
-				'example'	=> 'http://www.mediacollege.com/video/format/mpeg4/videofilename.mp4',
-				'match'		=> '#([^[]+)?\.(mp4|m4v)#si',
-				'replace'	=> './flashplayer/flashplayer.swf',
-				'method'	=> 'flash',
-				'flashvars'	=> 'config={\'clip\':{\'autoPlay\':false,\'autoBuffering\':true,\'url\':\'$0\'},\'playerId\':\'flashplayer_{ID}\',\'plugins\':{\'controls\':{\'url\':\'flashplayer.controls.swf\'}}}',
-			),
-			'(mov|dv|qt)' => array(
-				'id'		=> 205,
-				'image'		=> 'mov.gif',
-				'example'	=> 'http://trailers.apple.com/movies/wb/suckerpunch/suckerpunch-tlr2_480p.mov',
-				'match'		=> '#([^[]+)?\.(mov|dv|qt)#si',
-				'replace'	=> '<object height="{HEIGHT}" width="{WIDTH}" ' . (strpos(strtolower($user->browser), 'msie') ? 'classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0"' : 'type="video/quicktime" data="$0"') . '><param name="src" value="$0" /><param name="scale" value="tofit" /><param name="controller" value="true" /><param name="autoplay" value="false" /></object>',
-			),
 			'(mpg|mpeg)' => array(
 				'id'		=> 201,
 				'image'		=> 'mpg.gif',
@@ -2026,12 +2010,13 @@ class abbcode
 				'match'		=> '#([^[]+)?\.(mpg|mpeg)#si',
 				'replace'	=> (strpos(strtolower($user->browser), 'mac') ? '<object height="{HEIGHT}" width="{WIDTH}" type="video/quicktime" data="$0"><param name="src" value="$0" /><param name="scale" value="tofit" /><param name="controller" value="true" /><param name="autoplay" value="false" /></object>' : '<object height="{HEIGHT}" width="{WIDTH}" classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"><param name="autostart" value="false" /><param name="uimode" value="full" /><param name="showcontrols" value="true" /><param name="url" value="$0" /><!--[if !IE]>--><object height="{HEIGHT}" width="{WIDTH}" type="video/x-ms-wmv" data="$0"><param name="autostart" value="false" /><param name="showcontrols" value="true" /><param name="url" value="$0" /></object><!--<![endif]--></object>'),
 			),
-			'(avi|wmv)' => array(
-				'id'		=> 204,
-				'image'		=> 'wmv.gif',
-				'example'	=> 'http://www.mediacollege.com/video/format/windows-media/streaming/videofilename.wmv',
-				'match'		=> '#([^[]+)?\.(avi|wmv)#si',
-				'replace'	=> (strpos(strtolower($user->browser), 'mac') ? '<object height="{HEIGHT}" width="{WIDTH}" type="video/quicktime" data="$0"><param name="src" value="$0" /><param name="scale" value="tofit" /><param name="controller" value="true" /><param name="autoplay" value="false" /></object>' : '<object height="{HEIGHT}" width="{WIDTH}" classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"><param name="autostart" value="false" /><param name="uimode" value="full" /><param name="showcontrols" value="true" /><param name="url" value="$0" /><!--[if !IE]>--><object height="{HEIGHT}" width="{WIDTH}" type="video/x-ms-wmv" data="$0"><param name="autostart" value="false" /><param name="showcontrols" value="true" /><param name="url" value="$0" /></object><!--<![endif]--></object>'),
+			'swf' => array(
+				'id'		=> 202,
+				'image'		=> 'flash.gif',
+				'example'	=> 'http://flash-clocks.com/free-flash-clocks-blog-topics/free-flash-clock-177.swf',
+				'match'		=> '#([^[]+)?\.swf#si',
+				'replace'	=> '$0',
+				'method'	=> 'flash',
 			),
 			'flv' => array(
 				'id'		=> 203,
@@ -2042,20 +2027,19 @@ class abbcode
 				'method'	=> 'flash',
 				'flashvars'	=> 'config={\'clip\':{\'autoPlay\':false,\'autoBuffering\':true,\'url\':\'$0\'},\'playerId\':\'flashplayer_{ID}\',\'plugins\':{\'controls\':{\'url\':\'flashplayer.controls.swf\'}}}',
 			),
-			'swf' => array(
-				'id'		=> 202,
-				'image'		=> 'flash.gif',
-				'example'	=> 'http://flash-clocks.com/free-flash-clocks-blog-topics/free-flash-clock-177.swf',
-				'match'		=> '#([^[]+)?\.swf#si',
-				'replace'	=> '$0',
-				'method'	=> 'flash',
+			'(avi|wmv)' => array(
+				'id'		=> 204,
+				'image'		=> 'wmv.gif',
+				'example'	=> 'http://www.mediacollege.com/video/format/windows-media/streaming/videofilename.wmv',
+				'match'		=> '#([^[]+)?\.(avi|wmv)#si',
+				'replace'	=> (strpos(strtolower($user->browser), 'mac') ? '<object height="{HEIGHT}" width="{WIDTH}" type="video/quicktime" data="$0"><param name="src" value="$0" /><param name="scale" value="tofit" /><param name="controller" value="true" /><param name="autoplay" value="false" /></object>' : '<object height="{HEIGHT}" width="{WIDTH}" classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"><param name="autostart" value="false" /><param name="uimode" value="full" /><param name="showcontrols" value="true" /><param name="url" value="$0" /><!--[if !IE]>--><object height="{HEIGHT}" width="{WIDTH}" type="video/x-ms-wmv" data="$0"><param name="autostart" value="false" /><param name="showcontrols" value="true" /><param name="url" value="$0" /></object><!--<![endif]--></object>'),
 			),
-			'mp3' => array(
-				'id'		=> 207,
-				'image'		=> 'sound.gif',
-				'example'	=> 'http://www.robtowns.com/music/first_noel.mp3',
-				'match'		=> '#([^[]+)?\.mp3#si',
-				'replace'	=> '<object width="{WIDTH}" height="27" type="application/x-shockwave-flash" data="http://www.google.com/reader/ui/3523697345-audio-player.swf" style="-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; border:solid 1px #555; border-top:0"><param name="movie" value="http://www.google.com/reader/ui/3523697345-audio-player.swf" /><param name="quality" value="high" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="pluginspage" value="http://www.macromedia.com/go/getflashplayer" /><param name="autoplay" value="false" /><param name="autostart" value="false" /><param name="flashvars" value="audioUrl=$0" /></object>',
+			'(mov|dv|qt)' => array(
+				'id'		=> 205,
+				'image'		=> 'mov.gif',
+				'example'	=> 'http://trailers.apple.com/movies/wb/suckerpunch/suckerpunch-tlr2_480p.mov',
+				'match'		=> '#([^[]+)?\.(mov|dv|qt)#si',
+				'replace'	=> '<object height="{HEIGHT}" width="{WIDTH}" ' . (strpos(strtolower($user->browser), 'msie') ? 'classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0"' : 'type="video/quicktime" data="$0"') . '><param name="src" value="$0" /><param name="scale" value="tofit" /><param name="controller" value="true" /><param name="autoplay" value="false" /></object>',
 			),
 			'(mid|midi)' => array(
 				'id'		=> 206,
@@ -2064,14 +2048,30 @@ class abbcode
 				'match'		=> '#([^[]+)?\.(mid|midi)#si',
 				'replace'	=> '<object width="{WIDTH}" height="27" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"><param name="src" value="$0" /><param name="controller" value="true" /><param name="autoplay" value="false" /><param name="loop" value="false" /><!--[if !IE]>--><object width="{WIDTH}" height="27" type="audio/midi" data="$0"><param name="src" value="$0" /><param name="controller" value="true" /><param name="autoplay" value="false" /><param name="loop" value="false" /></object><!--<![endif]--></object>'
 			),
-			'ram' => array(
-				'id'		=> 208,
-				'image'		=> 'ram.gif',
-				'example'	=> 'http://service.real.com/help/library/guides/realone/IntroToStreaming/samples/ramfiles/startend.ram',
-				'match'		=> '#([^[]+)?\.ram#si',
-				'replace'	=> '<object id="rmstream{ID}" width="{WIDTH}" height="{HEIGHT}" type="audio/x-pn-realaudio-plugin" data="$0"><param name="src" value="$0" /><param name="autostart" value="false" /><param name="controls" value="ImageWindow" /><param name="console" value="clip_{ID}" /><param name="prefetch" value="false" /></object><br /><object id="ctrls_{ID}" type="audio/x-pn-realaudio-plugin" width="{WIDTH}" height="36"><param name="controls" value="ControlPanel" /><param name="console" value="clip_{ID}" /></object>',
+// 			'mp3' => array(
+// 				'id'		=> 207,
+// 				'image'		=> 'sound.gif',
+// 				'example'	=> 'http://www.robtowns.com/music/first_noel.mp3',
+// 				'match'		=> '#([^[]+)?\.mp3#si',
+// 				'replace'	=> '<object width="{WIDTH}" height="27" type="application/x-shockwave-flash" data="http://www.google.com/reader/ui/3523697345-audio-player.swf" style="-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; border:solid 1px #555; border-top:0"><param name="movie" value="http://www.google.com/reader/ui/3523697345-audio-player.swf" /><param name="quality" value="high" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="pluginspage" value="http://www.macromedia.com/go/getflashplayer" /><param name="autoplay" value="false" /><param name="autostart" value="false" /><param name="flashvars" value="audioUrl=$0" /></object>',
+// 			),
+// 			'ram' => array(
+// 				'id'		=> 208,
+// 				'image'		=> 'ram.gif',
+// 				'example'	=> 'http://service.real.com/help/library/guides/realone/IntroToStreaming/samples/ramfiles/startend.ram',
+// 				'match'		=> '#([^[]+)?\.ram#si',
+// 				'replace'	=> '<object id="rmstream{ID}" width="{WIDTH}" height="{HEIGHT}" type="audio/x-pn-realaudio-plugin" data="$0"><param name="src" value="$0" /><param name="autostart" value="false" /><param name="controls" value="ImageWindow" /><param name="console" value="clip_{ID}" /><param name="prefetch" value="false" /></object><br /><object id="ctrls_{ID}" type="audio/x-pn-realaudio-plugin" width="{WIDTH}" height="36"><param name="controls" value="ControlPanel" /><param name="console" value="clip_{ID}" /></object>',
+// 			),
+			'(mp4|m4v)' => array(
+				'id'		=> 209,
+				'image'		=> 'mov.gif',
+				'example'	=> 'http://www.mediacollege.com/video/format/mpeg4/videofilename.mp4',
+				'match'		=> '#([^[]+)?\.(mp4|m4v)#si',
+				'replace'	=> './flashplayer/flashplayer.swf',
+				'method'	=> 'flash',
+				'flashvars'	=> 'config={\'clip\':{\'autoPlay\':false,\'autoBuffering\':true,\'url\':\'$0\'},\'playerId\':\'flashplayer_{ID}\',\'plugins\':{\'controls\':{\'url\':\'flashplayer.controls.swf\'}}}',
 			),
-			// available ids: 210-300
+			// available ids: 207, 208, 210-300
 		);
 	}
 

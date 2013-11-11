@@ -130,6 +130,16 @@ $versions = array(
 
 	// Version 3.0.14
 	'3.0.14'		=> array(
+		// remove deprecated BBcodes
+		'table_row_remove' => array(
+			array('phpbb_bbcodes',
+				array(
+					'bbcode_tag' => 'ram',
+				),
+			),
+		),
+		// enable some new BBvideo IDs
+		'custom' => 'bbvideo_updater',
 		// purge the cache
 		'cache_purge' => '',
 	),
@@ -152,7 +162,7 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 */
 function abbc3_308($action, $version)
 {
-	global $db, $cache, $user, $umil, $config;;
+	global $db, $cache, $user, $umil, $config;
 
 	$message = '';
 
@@ -657,6 +667,7 @@ function bbvideo_updater($action, $version)
 		'3.0.10'  => array('51'),
 		'3.0.11'  => array('52', '53', '54', '55'),
 		'3.0.12'  => array('56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '209'),
+		'3.0.14'  => array(),
 	);
 
 	// Array containing arrays of old BBvideo IDs removed from ABBC3
@@ -665,6 +676,7 @@ function bbvideo_updater($action, $version)
 		'3.0.10'  => array(), // no BBvideos to remove
 		'3.0.11'  => array('111', '112', '113', '114'),
 		'3.0.12'  => array('101', '102', '103', '104', '105', '106', '107', '108', '109', '110'),
+		'3.0.14'  => array('207', '208'),
 	);
 
 	switch ($action)
@@ -2058,6 +2070,7 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'bbcode_image'			=> 'quicktime.gif',
 				'bbcode_group'			=> '0',
 			),
+		/*	Deprecated in v3.0.14
 			'ram'		=> array(
 				'bbcode_tag'			=> 'ram',
 				'bbcode_order'			=> 73,
@@ -2076,6 +2089,7 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'bbcode_image'			=> 'ram.gif',
 				'bbcode_group'			=> '0',
 			),
+		*/
 			'youtube'		=> array(
 				'bbcode_tag'			=> 'youtube',
 				'bbcode_order'			=> 74,

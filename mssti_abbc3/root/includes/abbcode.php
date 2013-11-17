@@ -1836,6 +1836,13 @@ class abbcode
 				'match'		=> '#http://(.*?)streetfire.net/video/([^[]*)?#si',
 				'replace'	=> '<div id="embed_{ID}"><script type="text/javascript">ogpEmbedVideo.init("$0", "{WIDTH}", "{HEIGHT}", "embed_{ID}");</script></div>',
 			),
+			'ted.com' => array(
+				'id'		=> 67,
+				'image'		=> 'ted.gif',
+				'example'	=> 'http://www.ted.com/talks/pranav_mistry_the_thrilling_potential_of_sixthsense_technology.html',
+				'match'		=> '#http:\/\/.*?ted.com\/talks\/([a-zA-Z0-9-_]+).html#si',
+				'replace'	=> '<iframe src="http://embed.ted.com/talks/$1.html" width="{WIDTH}" height="{HEIGHT}" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+			),
 			'testtube.com' => array(
 				'id'		=> 54,
 				'image'		=> 'testtube.gif',
@@ -2000,7 +2007,7 @@ class abbcode
 				'replace'	=> 'http://www.youtube.com/v/$1?version=3&hl=en_US',
 				'method'	=> 'flash',
 			),
-			// available ids: 67-200
+			// available ids: 68-200
 
 			'file' => array(),
 			'(mpg|mpeg)' => array(

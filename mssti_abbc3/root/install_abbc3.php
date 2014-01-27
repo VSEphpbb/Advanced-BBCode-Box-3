@@ -138,8 +138,12 @@ $versions = array(
 				),
 			),
 		),
-		// enable some new BBvideo IDs
-		'custom' => 'bbvideo_updater',
+		'custom' => array(
+			// enable some new BBvideo IDs
+			'bbvideo_updater',
+			// We have some BBCodes to update
+			'abbc3_bbcode_handler',
+		),
 		// purge the cache
 		'cache_purge' => '',
 	),
@@ -2503,6 +2507,28 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'abbcode'				=> 1,
 				'bbcode_image'			=> 'moderator.gif',
 				'bbcode_group'			=> '5, 4',
+			),
+		),
+		// BBCodes new and/or changed in version 3.0.14
+		'3.0.14' => array(
+			// Modified first and second pass match/replace
+			'youtube'		=> array(
+				'bbcode_tag'			=> 'youtube',
+				'bbcode_order'			=> 74,
+				'bbcode_id'				=> 1,
+				'bbcode_helpline'		=> 'ABBC3_YOUTUBE_TIP',
+				'bbcode_match'			=> '[youtube]{URL}[/youtube]',
+				'bbcode_tpl'			=> '<a src="{URL}">{URL}</a>',
+				'first_pass_match'		=> '!\[youtube\](https?://(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)([^[]*)?)\[/youtube\]!ies',
+				'first_pass_replace'	=> '\'[youtube:$uid]${1}[/youtube:$uid]\'',
+				'second_pass_match'		=> '!\[youtube:$uid\]https?://(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)([^[]*)?\[/youtube:$uid\]!sie',
+				'second_pass_replace'	=> "\$this->auto_embed_video('//www.youtube.com/v/\${1}?version=3&hl=en_US', '560', '340')",
+				'display_on_posting'	=> 0,
+				'display_on_pm'			=> 0,
+				'display_on_sig'		=> 0,
+				'abbcode'				=> 1,
+				'bbcode_image'			=> 'youtube.gif',
+				'bbcode_group'			=> '0',
 			),
 		),
 	);

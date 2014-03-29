@@ -1851,11 +1851,11 @@ class abbcode
 				'replace'	=> 'http://testtube.com/api/oembed/?url=$0&format=json',
 				'method'	=> 'oEmbed',
 			),
-			'thedailyshow.com' => array(
+			'thedailyshow.cc.com' => array(
 				'id'		=> 11,
 				'image'		=> 'comedycentral.gif',
-				'example'	=> 'http://www.thedailyshow.com/watch/thu-june-28-2012/roberts--rules-of-order',
-				'match'		=> '#http://(?:.*?)thedailyshow.com/watch/([^[]*)?#si',
+				'example'	=> 'http://thedailyshow.cc.com/videos/9ec0d8/judgment-gay',
+				'match'		=> '#http:\/\/(?:.*?)thedailyshow.cc.com\/videos\/([^[]*)?#si',
 				'replace'	=> '<div id="embed_{ID}"><script type="text/javascript">ogpEmbedVideo.init("$0", "{WIDTH}", "{HEIGHT}", "embed_{ID}");</script></div>',
 			),
 			'theonion.com' => array(

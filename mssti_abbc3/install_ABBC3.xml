@@ -38,9 +38,10 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 		</installation>
 		<history>
 			<entry>
-				<date>2014-03-29</date>
+				<date>2014-04-07</date>
 				<rev-version>3.0.14</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[[Fix] Correctly parse magic urls inside hidden BBCode.]]></change>
 					<change><![CDATA[[Update] Update TheDailyShow video embed codes (they have a new URL).]]></change>
 					<change><![CDATA[[Fix] Fix a problem with BBvideo URLs containing %20 breaking sprintf() functions.]]></change>
 					<change><![CDATA[[Update] Update Youtube video embed codes (drop the http protocol).]]></change>

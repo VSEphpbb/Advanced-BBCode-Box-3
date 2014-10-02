@@ -38,14 +38,14 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 		</installation>
 		<history>
 			<entry>
-				<date>2014-04-07</date>
+				<date>2014-10-01</date>
 				<rev-version>3.0.14</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[[New] Added new BBVideos: ted.com, vevo.com.]]></change>
 					<change><![CDATA[[Fix] Correctly parse magic urls inside hidden BBCode.]]></change>
-					<change><![CDATA[[Update] Update TheDailyShow video embed codes (they have a new URL).]]></change>
 					<change><![CDATA[[Fix] Fix a problem with BBvideo URLs containing %20 breaking sprintf() functions.]]></change>
-					<change><![CDATA[[Update] Update Youtube video embed codes (drop the http protocol).]]></change>
-					<change><![CDATA[[Update] Added new BBvideos for ted.com.]]></change>
+					<change><![CDATA[[Update] Update video embed codes (clipfish.de, cnbc.com, collegehumor.com, dailymotion.com, ebaumsworld.com, funnyordie.com, gamespot.com, ign.com, liveleak.com, metacafe.com, mpora.com, myvideo.de, sapo.pt, scribd.com, thedailyshow.com, ustream.com, vbox7.com, viddler.com, vimeo.com, youku.com, youtube.com and youtu.be).]]></change>
+					<change><![CDATA[[Change] Removed wegame.com BBvideo (site is dead).]]></change>
 					<change><![CDATA[[Change] Removed .ram BBcodes (format is dead).]]></change>
 					<change><![CDATA[[Change] Removed .mp3 BBcodes (Google Reader MP3 player was discontinued).]]></change>
 				</changelog>

@@ -1915,6 +1915,13 @@ class abbcode
 				'replace'	=> 'http://www.veoh.com/swf/webplayer/WebPlayer.swf?version=AFrontend.5.7.0.1361&permalinkId=$3&player=videodetailsembedded&videoAutoPlay=0&id=anonymous',
 				'method'	=> 'flash',
 			),
+			'vevo.com' => array(
+				'id'		=> 42,
+				'image'		=> 'vevo.gif',
+				'example'	=> 'http://www.vevo.com/watch/USUV71300904',
+				'match'		=> '#http:\/\/(?:www\.)?vevo\.com\/watch\/([^?]*)?#si',
+				'replace'	=> '<iframe width="{WIDTH}" height="{HEIGHT}" src="http://cache.vevo.com/m/html/embed.html?video=$1" frameborder="0" allowfullscreen></iframe>',
+			),
 			'viddler.com' => array(
 				'id'		=> 56,
 				'image'		=> 'viddler.gif',

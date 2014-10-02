@@ -184,7 +184,7 @@ WARNING: Please be advised that this MOD might overwrite some custom BBCodes you
 				<date>2010-05-20</date>
 				<rev-version>3.0.8</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Feature] Color bbcode : Colour picker : Now we have 4 options: 
+					<change><![CDATA[[Feature] Color bbcode : Colour picker : Now we have 4 options:
 										* phpBB style Default
 					 					* Drop Down Menu
 					  					* “fancy” selector

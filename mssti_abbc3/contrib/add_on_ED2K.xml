@@ -8,7 +8,7 @@
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Advanced BBCode Box 3 - Add-on : Enhanced ED2K links.]]></title>
 		<description lang="en"><![CDATA[This file provides instructions to enhance ED2K links in your forum.
-		
+
 		1) This will make ED2K links work directly (without [url] tag).
 		2) This will make a summary table at the end of the post to download all the ED2K links in-one-click.
 

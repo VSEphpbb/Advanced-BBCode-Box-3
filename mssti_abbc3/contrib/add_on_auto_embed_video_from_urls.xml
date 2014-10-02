@@ -8,7 +8,7 @@
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Advanced BBCode Box 3 - Add-on : Auto Embed Video From URLs.]]></title>
 		<description lang="en"><![CDATA[This file provides instructions to automatically embed video directly from plain URLs. This is especially useful with users who forget (or neglect) to use the BBvideo BBCode when posting a video site's URL. This add-on will embed their video automatically.
-		
+
 		1) This will automatically embed video from URL links (without [BBvideo] tag) in posts.
 		2) This follows the BBvideo settings in the ACP, so only video sites allowed for the BBvideo tag will be auto-embedded.
 		3) Limitations: The default height and width settings defined in the ACP for BBvideo will be used on all videos converted this way. Users can NOT adjust the video size like they can when using the BBvideo BBcode. This Add-On does not apply to URLs in signatures or URLs inside most BBcode tags, like [quote], [url], [b], etc.

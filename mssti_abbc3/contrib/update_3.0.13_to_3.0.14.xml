@@ -42,6 +42,9 @@
 	</header>
 	<action-group>
 		<copy>
+			<file from="root/abbcode_page.php" to="abbcode_page.php"/>
+			<file from="root/adm/style/acp_abbcodes.html" to="adm/style/acp_abbcodes.html"/>
+			<file from="root/adm/style/posting_abbcode_wizards.html" to="adm/style/posting_abbcode_wizards.html"/>
 			<file from="root/includes/*.*" to="includes/*.*"/>
 			<file from="root/install_abbc3.php" to="install_abbc3.php"/>
 			<file from="root/styles/abbcode/abbcode.css" to="styles/abbcode/abbcode.css"/>

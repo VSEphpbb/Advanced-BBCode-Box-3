@@ -1693,7 +1693,7 @@ class abbcode
 				'id'		=> 48,
 				'image'		=> 'nbc.gif',
 				'example'	=> 'http://www.msnbc.msn.com/id/21134540/vp/41172078#41190910',
-				'match'		=> '#http://www.msnbc.msn.com/id/(\d+)?/vp/(\d+)?#(\d+)?([^[]*)?#si',
+				'match'		=> '#http://www.msnbc.msn.com/id/(\d+)?/vp/(\d+)?\#(\d+)?([^[]*)?#si',
 				'replace'	=> 'http://www.msnbc.msn.com/id/32545640',
 				'method'	=> 'flash',
 				'flashvars'	=> 'launch=$3&width={WIDTH}&height={HEIGHT}',

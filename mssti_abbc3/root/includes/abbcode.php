@@ -1963,15 +1963,6 @@ class abbcode
 				'match'		=> '#http://(.*?)wat.tv/video/([^[]*)?#si',
 				'replace'	=> '<div id="embed_{ID}"><script type="text/javascript">ogpEmbedVideo.init("$0", "{WIDTH}", "{HEIGHT}", "embed_{ID}");</script></div>',
 			),
-			'wegame.com' => array(
-				'id'		=> 42,
-				'image'		=> 'wegame.gif',
-				'example'	=> 'http://www.wegame.com/watch/Clarity_Darkspear_VS_Heigan/',
-				'match'		=> '#http://www.wegame.com/watch/(.*?)/([^[]*)?#si',
-				'replace'	=> 'http://www.wegame.com/static/flash/player.swf?xmlrequest=http://www.wegame.com/player/video/$1&embedPlayer=true',
-				'method'	=> 'flash',
-				'flashvars'	=> 'xmlrequest=http://www.wegame.com/player/video/$1&embedPlayer=true',
-			),
 			'xfire.com' => array(
 				'id'		=> 44,
 				'image'		=> 'xfire.gif',

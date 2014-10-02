@@ -3,6 +3,8 @@ Advanced BBCode Box 3 for phpBB3
 
 ABBC3 replaces phpBB3's BBCode buttons with icons in a beautiful and highly customizable toolbar. ABBC3 also adds many new and useful BBCodes giving users more ways to customize their posts. It also improves some of phpBB3's built-in BBCodes and supports your own custom BBCodes. Additional features include an Image Resizer with various Lightbox styled expanders, and Auto-Embed Video for dozens of media sites and file formats.
 
+Note: [Development for the phpBB 3.1 Extension of this MOD has been moved to a new repository.](https://github.com/VSEphpbb/abbc3)
+
 
 Features
 --------

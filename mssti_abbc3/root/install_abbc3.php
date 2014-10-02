@@ -104,7 +104,7 @@ $versions = array(
 			// We have some BBCodes to update
 			'abbc3_bbcode_handler',
 		),
-		
+
 		// remove deprecated BBcodes
 		'table_row_remove' => array(
 			array('phpbb_bbcodes',
@@ -199,12 +199,12 @@ function abbc3_308($action, $version)
 	);
 
 	// CONFIG TABLE - array of config entries that need to be updated
-	$abbc3_config_update = array(	
+	$abbc3_config_update = array(
 		'max_post_font_size'	=> ($config['max_post_font_size'] != 0) ? (($config['max_post_font_size'] < 300) ? 300 : $config['max_post_font_size']) : 0,
 	);
 
 	// CONFIG TABLE - array of entries from older versions of ABBC3 to remove
-	$abbc3_config_deprecated = array(	
+	$abbc3_config_deprecated = array(
 	//	config_name                    Created  Deprecated
 		'ABBC3_GREYBOX',			// v1.0.9	v1.0.10
 		'ABBC3_JAVASCRIPT',			// v1.0.10	v1.0.11
@@ -324,7 +324,7 @@ function abbc3_308($action, $version)
 			{
 				$umil->table_add('phpbb_clicks', $abbc3_clicks_table);
 			}
-		
+
 			// USERS TABLE - Start
 			foreach ($abbc3_users_column_add as $abbc3_users_column_name => $abbc3_users_column_data)
 			{
@@ -342,7 +342,7 @@ function abbc3_308($action, $version)
 					$umil->table_column_add('phpbb_bbcodes', $abbc3_bbcode_column_name, $abbc3_bbcode_column_data);
 				}
 			}
-		
+
 			// Change the following columns
 			$umil->table_column_update('phpbb_bbcodes', 'bbcode_id', array('INT:4', 0));
 
@@ -356,7 +356,7 @@ function abbc3_308($action, $version)
 			foreach ($abbc3_bbcode_deprecated as $bbcode_name)
 			{
 				// Check if exist
-				$sql = 'SELECT * 
+				$sql = 'SELECT *
 						FROM ' . BBCODES_TABLE . "
 						WHERE LOWER(bbcode_tag) = '" . $db->sql_escape(strtolower($bbcode_name)) . "'";
 				$result = $db->sql_query($sql);
@@ -381,7 +381,7 @@ function abbc3_308($action, $version)
 
 		case 'uninstall':
 			// Run this when uninstalling - basically the reverse of the above install case
-		
+
 			// BBCODES TABLE - Start
 			// Remove the ABBC3 custom BBCodes first, before uninstalling anything else
 			$message .= abbc3_bbcode_handler($action, $version, true);
@@ -415,7 +415,7 @@ function abbc3_308($action, $version)
 
 			// CLICKS TABLE - Start
 			$umil->table_remove('phpbb_clicks');
-			
+
 			// MODULES TABLE - Start
 			$umil->module_remove(array_reverse($abbc3_module_data));
 			$cache->destroy('_modules_acp');
@@ -551,7 +551,7 @@ function abbc3_add_bbcodes($action, $version)
 		);
 
 		// Check if exists
-		$sql = 'SELECT * 
+		$sql = 'SELECT *
 				FROM ' . BBCODES_TABLE . "
 				WHERE LOWER(bbcode_tag) = '" . $db->sql_escape(strtolower($sql_ary['bbcode_tag'])) . "'";
 		$result = $db->sql_query($sql);
@@ -619,7 +619,7 @@ function abbc3_add_bbcodes($action, $version)
 	if (sizeof($ary_bbcode_added))
 	{
 		$message .= '<p>' . $user->lang['LINE_ADDED'] . ' : ' . implode(', ', $ary_bbcode_added) . '</p>';
-		
+
 	}
 
 	// Return a string
@@ -637,16 +637,16 @@ function abbc3_sync_bbcodes()
 	$bbcode_tag_ary =  array('font=', 'size', 'highlight=', 'color');
 	$next_bbcode_order = sizeof($bbcode_tag_ary) + 1;
 
-	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_order 
-			FROM ' . BBCODES_TABLE . ' 
-			WHERE ' . $db->sql_in_set('bbcode_tag', $bbcode_tag_ary, true) . ' 
+	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_order
+			FROM ' . BBCODES_TABLE . '
+			WHERE ' . $db->sql_in_set('bbcode_tag', $bbcode_tag_ary, true) . '
 			ORDER BY bbcode_order';
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'UPDATE ' . BBCODES_TABLE . " 
-				SET bbcode_order = $next_bbcode_order 
+		$sql = 'UPDATE ' . BBCODES_TABLE . "
+				SET bbcode_order = $next_bbcode_order
 				WHERE bbcode_id = {$row['bbcode_id']}";
 		$db->sql_query($sql);
 
@@ -719,7 +719,7 @@ function bbvideo_updater($action, $version)
 			$umil->config_update('ABBC3_VIDEO_OPTIONS', implode(';', $video_options_array));
 		break;
 	}
-	
+
 	// Return a string
 	return $user->lang['INSTALLER_BBVIDEO_UPDATER'];
 }
@@ -730,7 +730,7 @@ function bbvideo_updater($action, $version)
 function image_resizer_updater($action, $version)
 {
 	global $umil, $user;
-	
+
 	// Array containing names of replacement image resizers
 	$new_resizer = array(
 		'3.0.9.3'  => 'Shadowbox',

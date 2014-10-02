@@ -32,7 +32,7 @@ class abbcode
 	// UPLOAD was was deprecated in v3.0.7
 	var $need_permissions = array('URL', 'FLASH', 'IMG', 'THUMBNAIL', 'IMGSHACK', 'WEB', 'ED2K', 'RAPIDSHARE', 'TESTLINK', 'FLV' ,'BBVIDEO' /* ,'HTML' */ /* ,'UPLOAD' */ );
 
-	// [testlinks] and [rapidshare] Hide link/s from guest and bots ?	
+	// [testlinks] and [rapidshare] Hide link/s from guest and bots ?
 	var $hide_links	= false;	// Options true=hide / false=display, default false
 	// [testlinks] and [rapidshare] Display the OK/WRONG image or use text ?
 	var $img_links	= true;		// Options true=use image / false=use text, default true
@@ -142,9 +142,9 @@ class abbcode
 		*/
 		$display = ($mode == 'signature' || $mode == 'sig') ? 'display_on_sig' : (($mode == 'post' || $mode == 'edit' || $mode == 'quote' || $mode == 'reply') ? 'display_on_posting' : 'display_on_pm');
 
-		$sql = "SELECT abbcode, bbcode_tag, bbcode_order, bbcode_id, bbcode_group, bbcode_tag, bbcode_helpline, bbcode_image, display_on_posting 
-				FROM " . BBCODES_TABLE . " 
-				WHERE $display = 1 
+		$sql = "SELECT abbcode, bbcode_tag, bbcode_order, bbcode_id, bbcode_group, bbcode_tag, bbcode_helpline, bbcode_image, display_on_posting
+				FROM " . BBCODES_TABLE . "
+				WHERE $display = 1
 				ORDER BY bbcode_order";
 		$result = $db->sql_query($sql);
 
@@ -163,7 +163,7 @@ class abbcode
 
 			// Check phpbb permissions status
 			// Check ABBC3 groups permission
-			// try to make it as quicky as it can be 
+			// try to make it as quicky as it can be
 			$auth_tag = preg_replace('#\=(.*)?#', '', strtoupper(trim($row['bbcode_tag'])));
 			if ((isset($row['bbcode_group']) && $row['bbcode_group']) || in_array($auth_tag, $this->need_permissions))
 			{
@@ -272,9 +272,9 @@ class abbcode
 			{
 				$user->data['agroup_id'] = array();
 
-				$sql = 'SELECT * 
-						FROM ' . USER_GROUP_TABLE . ' 
-						WHERE user_id = ' . $user->data['user_id'] . ' 
+				$sql = 'SELECT *
+						FROM ' . USER_GROUP_TABLE . '
+						WHERE user_id = ' . $user->data['user_id'] . '
 						AND user_pending = 0 ';
 				$result = $db->sql_query($sql);
 
@@ -404,7 +404,7 @@ class abbcode
 				}
 			}
 
-			// If this bbcode was rejected, do not continue 
+			// If this bbcode was rejected, do not continue
 			if (!$return_value)
 			{
 				return $return_value;
@@ -532,7 +532,7 @@ class abbcode
 		$string = strtolower(str_replace(array("\\", '&#40;', '&#41;', '&amp;'), array("", '(', ')', '&'), $string));
 
 		////
-		// You can change this option to your liking, can delete or disable. 
+		// You can change this option to your liking, can delete or disable.
 		// eg : if you want to disable url use /*'url',*/
 		////
 
@@ -559,7 +559,7 @@ class abbcode
 
 	/**
 	* Parsing the e-links  - Second pass.
-	* 
+	*
 	* Inspired in :	MOD Title: eD2k links processing with availability statistics
 	* 				MOD Author: Meithar, then updated by Bill Hicks, C0de_m0nkey and DonGato (current maintainer)
 	*
@@ -568,7 +568,7 @@ class abbcode
 	* @param string		$var2		ed2k name
 	* @return bbcode 	template replacement
 	* @version 3.0.8
-	* 
+	*
 	* link eD2k basics					: ed2k://|file|>File Name<|>File size<|>File Hash<|/
 	* link eD2k with set of hashes		: ed2k://|file|>File Name<|>File size<|>File Hash<|p=>set of hashes<|/
 	* link eD2k with sources			: ed2k://|file|>File Name<|>File size<|>File Hash<|/|sources,>IP:PORT<|/
@@ -910,7 +910,7 @@ class abbcode
 	{
 		global $user;
 
-		$in = htmlentities($in, ENT_NOQUOTES, 'UTF-8');	
+		$in = htmlentities($in, ENT_NOQUOTES, 'UTF-8');
 		return str_replace(array('{NFO_TITLE}', '{NFO_TEXT}'), array($user->lang['ABBC3_NFO_TITLE'], str_replace(" ", "&nbsp;", $in)), $this->bbcode_tpl('nfo'));
 	}
 
@@ -920,7 +920,7 @@ class abbcode
 	* @param string		$in		post text between [html] & [/html]
 	* @return string	(x)HTML data
 	*
-	* THIS FUNTION IS DEPRECATED SINCE VERSION 1.0.11 ! suggested by MOD Team 
+	* THIS FUNTION IS DEPRECATED SINCE VERSION 1.0.11 ! suggested by MOD Team
 	* So warn the user about this if he is still using the old database
 	*/
 	function html_pass($in)
@@ -1128,7 +1128,7 @@ class abbcode
 
 		$rapidshare_link = '<a href="' . $in . '" title="' . $in . '" onclick="window.open(this.href);return false;">' . $in . '</a>';
 		$rapidshare_msg  = '<span class="abbc3_wrong">' . $user->lang['ABBC3_RAPIDSHARE_WRONG'] . '</span>';
-		$rapidshare_pic  = '<img src="' . $error_icon . '" style="vertical-align:bottom; padding:2px 0;" class="postimage" alt="' . $user->lang['ABBC3_RAPIDSHARE_WRONG'] . '" title="' . $user->lang['ABBC3_RAPIDSHARE_WRONG'] . '" />';	
+		$rapidshare_pic  = '<img src="' . $error_icon . '" style="vertical-align:bottom; padding:2px 0;" class="postimage" alt="' . $user->lang['ABBC3_RAPIDSHARE_WRONG'] . '" title="' . $user->lang['ABBC3_RAPIDSHARE_WRONG'] . '" />';
 
 		// get fileid and filename from the rapidshare url
 		preg_match('/https?:\/\/(?:www.)?rapidshare.com\/.*\/([\d]+)\/(.*)/', $in, $matches);
@@ -1147,12 +1147,12 @@ class abbcode
 		}
 		else
 		{
-			$rapidshare_check = @file_get_contents($rs_api_url);		
+			$rapidshare_check = @file_get_contents($rs_api_url);
 		}
 
 		if ($rapidshare_check !== false)
 		{
-			$resp_arr = explode(',', $rapidshare_check);			
+			$resp_arr = explode(',', $rapidshare_check);
 			if($resp_arr[4] == 1) // 1=File OK (Anonymous downloading)
 			{
 				$rapidshare_msg = '<span class="abbc3_good">' . $user->lang['ABBC3_RAPIDSHARE_GOOD'] . '</span>';
@@ -1216,7 +1216,7 @@ class abbcode
 			$data	= array(
 				'url' => preg_replace('#<img src="(.*?)"((.*?))\/>#si', '$1', $var2),
 			);
-		}		
+		}
 
 		if ($valid)
 		{
@@ -2109,7 +2109,7 @@ class abbcode
 		$oembed_data 	 = @json_decode($oembed_contents);
 		$embed_code 	 = (isset($oembed_data->html)) ? $oembed_data->html : '';
 		$embed_code 	 = preg_replace(array('/width="([0-9]{1,4})"/i', '/height="([0-9]{1,4})"/i'), array('width="' . $width . '"', 'height="' . $height . '"'), $embed_code);
-		return $embed_code;	
+		return $embed_code;
 	}
 
 	/**
@@ -2125,7 +2125,7 @@ class abbcode
 	function auto_embed_video($url, $width, $height, $flashvars = '', $object_attribs_ary = array(), $object_params_ary = array())
 	{
 		global $config;
-		
+
 		// Try to cope with a common user error...
 		if (preg_match('#^[a-z0-9]+://#i', $url))
 		{
@@ -2154,7 +2154,7 @@ class abbcode
 		if (isset($config['ABBC3_VIDEO_WMODE']) && $config['ABBC3_VIDEO_WMODE'])
 		{
 			$object_params_ary['wmode'] = 'transparent';
-		}		
+		}
 		if (!empty($flashvars))
 		{
 			$object_params_ary['flashvars'] = trim(str_replace('&', '&amp;', $flashvars));
@@ -2225,7 +2225,7 @@ class abbcode
 					return make_clickable($in);
 				}
 
-				// if user has flash animations disabled in UCP, return as [ flash ] link 
+				// if user has flash animations disabled in UCP, return as [ flash ] link
 				if (!$user->optionget('viewflash'))
 				{
 					return str_replace(array('$1', '$2'), array($in, '[ flash ]'), $this->bbcode_tpl('url', -1, true));
@@ -2377,7 +2377,7 @@ function abbc3_add_all_ed2k_link($text, $post_id)
 * eD2k Add-on optionally called from viewtopic
 * 	Replace magic urls and display ed2k links format
 *	Cuts down displayed size of link if over 50 chars, turns absolute links
-* 
+*
 * @param string 	$link	post links with ed2k href
 * @return string	display ed2k links format
 * @version 3.0.8
@@ -2447,11 +2447,11 @@ function abbc3_ed2k_humanize_size($size, $rounder = 0)
 
 /**
  * linktest class
- * 
- * This class is used to check the validity of file host links (also called one-click hosts). 
+ *
+ * This class is used to check the validity of file host links (also called one-click hosts).
  * It does so by looking for the file size that the host displays. It requires that you have
  * curl installed and a version of PHP that supports preg_match and preg_replace.
- * 
+ *
  * @license 	GPL license
  * @author	 	Max Power
  * @copyright	2008, Max Power
@@ -2469,17 +2469,17 @@ class linktest
 	* The test method is the only public method and the only method necessary for interfacing
 	* with this class. The list of supported hosts is in this method. Only six hosts are used
 	* as default but many others are available as needed and need to be uncommented for use.
-	* 
+	*
 	* @param string url (required) - must be a full url including http://
 	* @param string format (optional) - only accepted strings are 'KB', 'MB', and 'GB'
 	* @param boolean supported (optional) - to only allow supported hosts or not
 	* @return array result - zero index is either a number or false
-	*/ 
+	*/
 	function test($url, $format = 'MB', $supported = false)
 	{
 		// check for valid hostname in url
 		$pattern = '@^https?://?([^/]+)@i';
-		
+
 		if (preg_match($pattern, $url, $matches))
 		{
 			$hostname = $matches[1];
@@ -2492,38 +2492,38 @@ class linktest
 		//	$result[2] = "The link provided is not a valid url";
 			return $result;
 		}
-		
+
 		// set format to 'MB' if variable is not KB, MB or GB
 		$format = strtoupper($format);
-		
+
 		if ($format !== 'KB' && $format !== 'MB' && $format !== 'GB')
 		{
 			$format = 'MB';
 		}
-		
+
 		// set supported to true if variable is not true or false
 		if ($supported !== true && $supported !== false)
 		{
 			$supported = true;
 		}
-		
+
 		// set global variables
 		$this->url = $url;
 		$this->format = $format;
-		
+
 		/** FILE HOST PROCESSING
 		* array of hosts to check against url
 		* important: do not change key names
 		* the following is the format of the hosts array:
 		* $hosts[method name][domain name] = array(domain pattern, url retrieve method, size adjustment, filters array);
 		*/
-		
+
 		// most popular hosts
 		$hosts['rapidshare']['rapidshare.com'] 		= array("@rapidshare\.com@i", 'curl', 1000 / $this->CONVERSION, array('@<u>100 MB</u>@i'));
 		$hosts['rapidshare']['rapidshare.de'] 		= array("@rapidshare\.de@i", 'curl', 1, array('@>300 MB<@i'));
 		$hosts['other']['depositfiles.com'] 		= array("@depositfiles\.com@i", 'file', 1);
 		$hosts['other']['megashares.com'] 			= array("@megashares\.com@i", 'curl', 1, array('@ 10GB@i'));
-		
+
 		// lesser known hosts these hosts are commented out but can be used as needed
 		//$hosts['other']['filefactory.com'] 		= array("@filefactory\.com@i", 'curl', 1);
 		//$hosts['other']['sendspace.com'] 			= array("@sendspace\.com@i", 'file', 1);
@@ -2566,10 +2566,10 @@ class linktest
 		//$hosts['other']['filefront.com'] 			= array("@filefront\.com@i", 'curl', 1);
 		//$hosts['other']['megaupload.com'] 		= array("@megaupload\.com@i", 'curl', 1);
 		//$hosts['other']['megarotic.com'] 			= array("@megarotic\.com@i", 'curl', 1);
-		
+
 		// find out which host to check and set variables from array
 		$host = false;
-		
+
 		foreach ($hosts as $key => $value)
 		{
 			foreach ($value as $domain => $pattern)
@@ -2584,7 +2584,7 @@ class linktest
 				}
 			}
 		}
-		
+
 		// return false if no supported hosts were matched or set default variables if supported is false
 		if (!$host)
 		{
@@ -2614,17 +2614,17 @@ class linktest
 
 		// dynamic function call
 		$result = $this->$host();
-		
+
 		return $result;
 	}
 
 	/**
 	* Rapidshare requires a two step process in order to view the file size. To make it more
-	* complicated, the second page can only be reached using POST. This method gathers the 
+	* complicated, the second page can only be reached using POST. This method gathers the
 	* information required to make the POST call and passes it to the other function, which
 	* the other domains use. If other hosts require a two step process, this rapidshare method
 	* can be used as a template.
-	* 
+	*
 	* @return array result
 	*/
 	function rapidshare()
@@ -2642,7 +2642,7 @@ class linktest
 	//	$matches	= $this->match($this->url, $pattern);
 	//	$url		= $matches[1];
 	//	$params		= "dl.start=Free";
-		
+
 		// get rapidshare.de hidden param
 	//	if ($this->domain == 'rapidshare.de')
 	//	{
@@ -2654,11 +2654,11 @@ class linktest
 	//			$params = "$params&uri=$param";
 	//		}
 	//	}
-		
+
 		// get file size
 	//	$this->url	= $url;
 	//	$result		= $this->other($params);
-		
+
 	//	return $result;
 		return $matches;
 	}
@@ -2667,7 +2667,7 @@ class linktest
 	* The other method is used to get the file size by all domains other than rapidshare. It
 	* contains the standard pattern for finding the file size and also makes the call to the
 	* match method and convertSize method.
-	* 
+	*
 	* @param string params (optional) - params is used for passing POST parameters
 	* @return array result
 	*/
@@ -2678,7 +2678,7 @@ class linktest
 		$matches		= $this->match($this->url, $pattern, $params);
 	//	$size			= $matches[1];
 	//	$sourceFormat	= strtoupper($matches[2]);
-		
+
 	//	if (is_null($size) || rtrim($size) == '')
 	//	{
 	//		$result[0] = false;
@@ -2694,7 +2694,7 @@ class linktest
 	//	}
 		// convert size to requested format
 	//	$result = $this->convertSize($size, $sourceFormat);
-		
+
 	//	return $result;
 		return $matches;
 	}
@@ -2705,7 +2705,7 @@ class linktest
 	* to the global method variable. Next, the HTML is filtered for common problems and then for
 	* the domain specific filters that are stored in the global fitlers array. Finally, the filtered
 	* HTML is matched against the pattern that is passed into the method.
-	* 
+	*
 	* @param string url (required) - this url may not always be the same as the global url so it must be passed
 	* @param string params (optional) - params is used for passing POST parameters
 	* @return array result
@@ -2716,7 +2716,7 @@ class linktest
 		if ($this->method == 'curl')
 		{
 			$curl = curl_init();
-			
+
 			if (!is_null($params))
 			{
 				curl_setopt($curl, CURLOPT_POST, 1);
@@ -2750,7 +2750,7 @@ class linktest
 		$patterns[] = '@<noscript>(.|\n)*?</noscript>@i';
 		$patterns[] = '@&nbsp;@i';
 		$patterns[] = '@</b>@i';
-		
+
 		// add custom patterns from filters array
 		if (is_array($this->filters))
 		{
@@ -2772,7 +2772,7 @@ class linktest
 
 		// uncomment line below to test filtered html
 		// echo "<xmp>$html</xmp>"; exit;
-		
+
 		// check html against pattern and return result
 		if (preg_match($pattern, $html, $matches))
 		{
@@ -2789,7 +2789,7 @@ class linktest
 	* uses (KB, MB, or GB) to the file size format that was requested from the test method.
 	* It also uses the adjustment variable, which is used if the host converts their file
 	* sizes wrong (the most noteable example is rapidshare.com, which needs adjustment).
-	* 
+	*
 	* @param number size (required) - the file size that was matched from the host
 	* @param string sourceFormat (required) - the format that the host uses (not the requested format)
 	* @return array result

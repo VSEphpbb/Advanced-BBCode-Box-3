@@ -21,22 +21,22 @@ Features
 
 ### New BBCodes
 
-	Font Family, Highlight Text, Cut, Copy, Paste, Tabs, Horizontal line, Strike through
-	text, Superscript, Subscript, Glow, Shadow, Dropshadow, Blur, Wave, Fade text,
-	Rainbow text, Justify Align, Right Align, Center Align, Left Align, Preformat text,
-	Indent, Scrolling text, Spoiler, Hidden, Moderator Message, Off Topic, NFO, Tables,
-	Anchor, Email, Ed2k links, Thumbnail images, Imgshack, Rapidshare links, Click
-	counter, Search text, BBvideo, and more.
+	Font Family, Highlight Text, Cut, Copy, Paste, Tabs, Horizontal line, Strike
+	through text, Superscript, Subscript, Glow, Shadow, Dropshadow, Blur, Wave, Fade
+	text, Rainbow text, Justify Align, Right Align, Center Align, Left Align,
+	Preformat text, Indent, Scrolling text, Spoiler, Hidden, Moderator Message, Off
+	Topic, NFO, Tables, Anchor, Email, Ed2k links, Thumbnail images, Imgshack,
+	Rapidshare links, Click counter, Search text, BBvideo, and more.
  
 ### Supported Video Sharing Sites
 
 	5min.com, allocine.fr, on.aol.com, blip.tv, break.com, clipfish.de, clipmoon.com,
-	cnbc.com, cnettv.cnet.com, colbertnation.com, collegehumor.com, comedycentral.com,
-	crackle.com, dailymotion.com, dotsub.com, ebaumsworld.com, facebook.com, flickr.com,
-	funnyordie.com, g4tv.com, gameprotv.com, gamespot.com, gametrailers.com,
-	gamevideos.1up, godtube.com, howcast.com, hulu.com, ign.com, liveleak.com,
-	metacafe.com, moddb.com, mpora.com, msnbc.msn.com, myspace.com, myvideo.de,
-	photobucket.com, qik.com, revision3.com, rutube.ru, sapo.pt, screen.yahoo.com,
+	cnbc.com, cnettv.cnet.com, colbertnation.com, collegehumor.com,
+	comedycentral.com, crackle.com, dailymotion.com, dotsub.com, ebaumsworld.com,
+	facebook.com, flickr.com, funnyordie.com, g4tv.com, gameprotv.com, gamespot.com,
+	gametrailers.com, gamevideos.1up, godtube.com, howcast.com, hulu.com, ign.com,
+	liveleak.com, metacafe.com, moddb.com, mpora.com, msnbc.msn.com, myspace.com,
+	myvideo.de, photobucket.com, revision3.com, rutube.ru, sapo.pt, screen.yahoo.com,
 	screenr.com, scribd.com, sevenload.com, slideshare.net, snotr.com, spike.com,
 	streetfire.net, ted.com, testtube.com, thedailyshow.com, theonion.com, tu.tv,
 	twitch.tv, twitvid.com, ustream.tv, vbox7.com, veoh.com, vevo.com, viddler.com,

@@ -1720,14 +1720,6 @@ class abbcode
 				'replace'	=> 'http://static.photobucket.com/player.swf?file=http://vid$1.photobucket.com/$2$5',
 				'method'	=> 'flash',
 			),
-			'qik.com' => array(
-				'id'		=> 64,
-				'image'		=> 'qik.gif',
-				'example'	=> 'http://qik.com/video/43675514',
-				'match'		=> '#http:\/\/(qik\.com\/video\/.*|qik\.ly\/.*)#si',
-				'replace'	=> 'http://qik.com/api/oembed?url=$0&format=json',
-				'method'	=> 'oEmbed',
-			),
 			'revision3.com' => array(
 				'id'		=> 54,
 				'image'		=> 'revision3.gif',
@@ -1803,7 +1795,7 @@ class abbcode
 				'replace'	=> '<div id="embed_{ID}"><script type="text/javascript">ogpEmbedVideo.init("$0", "{WIDTH}", "{HEIGHT}", "embed_{ID}");</script></div>',
 			),
 			'ted.com' => array(
-				'id'		=> 67,
+				'id'		=> 64,
 				'image'		=> 'ted.gif',
 				'example'	=> 'http://www.ted.com/talks/pranav_mistry_the_thrilling_potential_of_sixthsense_technology.html',
 				'match'		=> '#https?:\/\/.*?ted.com\/talks\/([a-zA-Z0-9-_]+).html#si',
@@ -1957,7 +1949,7 @@ class abbcode
 				'match'		=> '#https?://(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)([^[]*)?#i', // matches every youtube URL
 				'replace'	=> '<iframe width="{WIDTH}" height="{HEIGHT}" src="//www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>',
 			),
-			// available ids: 68-200
+			// available ids: 67-200
 
 			'file' => array(),
 			'(mpg|mpeg)' => array(

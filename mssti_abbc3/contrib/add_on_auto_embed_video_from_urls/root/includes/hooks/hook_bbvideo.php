@@ -50,7 +50,7 @@ function url_to_bbvideo_hook(&$hook)
 	{
 		if (!class_exists('bbcode'))
 		{
-			include($phpbb_root_path . 'includes/bbcode.' . $phpEx);		
+			include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
 		}
 		else
 		{	

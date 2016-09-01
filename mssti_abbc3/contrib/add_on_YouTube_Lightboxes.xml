@@ -12,7 +12,7 @@
 		REQUIREMENTS - You must have Highslide, Lightview, prettyPhoto or Shadowbox as your chosen Image Resizer in ABBC3's settings page in the ACP.
 
 		NOTICE: For compatability with Shadowbox, you must also check the "Flash (swf files)" box when downloading the shadowbox.js script from http://www.shadowbox-js.com/download.html.
-		
+
 		COMMENTS: At this time only YouTube is supported. While some of these scripts may support Flash, Vimeo and other sites, we chose to only support YouTube for now. This is mainly because as of right now YouTube has the easiest way for this MOD to present a clickable thumbnail of the movie.]]></author-notes>
 		<author-group>
 			<author>
@@ -32,7 +32,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>3.0.13</mod-version>
+		<mod-version>3.0.14</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>

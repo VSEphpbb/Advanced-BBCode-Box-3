@@ -104,7 +104,7 @@ $versions = array(
 			// We have some BBCodes to update
 			'abbc3_bbcode_handler',
 		),
-		
+
 		// remove deprecated BBcodes
 		'table_row_remove' => array(
 			array('phpbb_bbcodes',
@@ -126,7 +126,24 @@ $versions = array(
 			// We have some BBCodes to update
 			'abbc3_bbcode_handler',
 		),
-		
+	),
+
+	// Version 3.0.14
+	'3.0.14'		=> array(
+		// remove deprecated BBcodes
+		'table_row_remove' => array(
+			array('phpbb_bbcodes',
+				array(
+					'bbcode_tag' => 'ram',
+				),
+			),
+		),
+		'custom' => array(
+			// enable some new BBvideo IDs
+			'bbvideo_updater',
+			// We have some BBCodes to update
+			'abbc3_bbcode_handler',
+		),
 		// purge the cache
 		'cache_purge' => '',
 	),
@@ -149,7 +166,7 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 */
 function abbc3_308($action, $version)
 {
-	global $db, $cache, $user, $umil, $config;;
+	global $db, $cache, $user, $umil, $config;
 
 	$message = '';
 
@@ -182,12 +199,12 @@ function abbc3_308($action, $version)
 	);
 
 	// CONFIG TABLE - array of config entries that need to be updated
-	$abbc3_config_update = array(	
+	$abbc3_config_update = array(
 		'max_post_font_size'	=> ($config['max_post_font_size'] != 0) ? (($config['max_post_font_size'] < 300) ? 300 : $config['max_post_font_size']) : 0,
 	);
 
 	// CONFIG TABLE - array of entries from older versions of ABBC3 to remove
-	$abbc3_config_deprecated = array(	
+	$abbc3_config_deprecated = array(
 	//	config_name                    Created  Deprecated
 		'ABBC3_GREYBOX',			// v1.0.9	v1.0.10
 		'ABBC3_JAVASCRIPT',			// v1.0.10	v1.0.11
@@ -307,7 +324,7 @@ function abbc3_308($action, $version)
 			{
 				$umil->table_add('phpbb_clicks', $abbc3_clicks_table);
 			}
-		
+
 			// USERS TABLE - Start
 			foreach ($abbc3_users_column_add as $abbc3_users_column_name => $abbc3_users_column_data)
 			{
@@ -325,7 +342,7 @@ function abbc3_308($action, $version)
 					$umil->table_column_add('phpbb_bbcodes', $abbc3_bbcode_column_name, $abbc3_bbcode_column_data);
 				}
 			}
-		
+
 			// Change the following columns
 			$umil->table_column_update('phpbb_bbcodes', 'bbcode_id', array('INT:4', 0));
 
@@ -339,7 +356,7 @@ function abbc3_308($action, $version)
 			foreach ($abbc3_bbcode_deprecated as $bbcode_name)
 			{
 				// Check if exist
-				$sql = 'SELECT * 
+				$sql = 'SELECT *
 						FROM ' . BBCODES_TABLE . "
 						WHERE LOWER(bbcode_tag) = '" . $db->sql_escape(strtolower($bbcode_name)) . "'";
 				$result = $db->sql_query($sql);
@@ -364,7 +381,7 @@ function abbc3_308($action, $version)
 
 		case 'uninstall':
 			// Run this when uninstalling - basically the reverse of the above install case
-		
+
 			// BBCODES TABLE - Start
 			// Remove the ABBC3 custom BBCodes first, before uninstalling anything else
 			$message .= abbc3_bbcode_handler($action, $version, true);
@@ -398,7 +415,7 @@ function abbc3_308($action, $version)
 
 			// CLICKS TABLE - Start
 			$umil->table_remove('phpbb_clicks');
-			
+
 			// MODULES TABLE - Start
 			$umil->module_remove(array_reverse($abbc3_module_data));
 			$cache->destroy('_modules_acp');
@@ -534,7 +551,7 @@ function abbc3_add_bbcodes($action, $version)
 		);
 
 		// Check if exists
-		$sql = 'SELECT * 
+		$sql = 'SELECT *
 				FROM ' . BBCODES_TABLE . "
 				WHERE LOWER(bbcode_tag) = '" . $db->sql_escape(strtolower($sql_ary['bbcode_tag'])) . "'";
 		$result = $db->sql_query($sql);
@@ -602,7 +619,7 @@ function abbc3_add_bbcodes($action, $version)
 	if (sizeof($ary_bbcode_added))
 	{
 		$message .= '<p>' . $user->lang['LINE_ADDED'] . ' : ' . implode(', ', $ary_bbcode_added) . '</p>';
-		
+
 	}
 
 	// Return a string
@@ -620,16 +637,16 @@ function abbc3_sync_bbcodes()
 	$bbcode_tag_ary =  array('font=', 'size', 'highlight=', 'color');
 	$next_bbcode_order = sizeof($bbcode_tag_ary) + 1;
 
-	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_order 
-			FROM ' . BBCODES_TABLE . ' 
-			WHERE ' . $db->sql_in_set('bbcode_tag', $bbcode_tag_ary, true) . ' 
+	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_order
+			FROM ' . BBCODES_TABLE . '
+			WHERE ' . $db->sql_in_set('bbcode_tag', $bbcode_tag_ary, true) . '
 			ORDER BY bbcode_order';
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$sql = 'UPDATE ' . BBCODES_TABLE . " 
-				SET bbcode_order = $next_bbcode_order 
+		$sql = 'UPDATE ' . BBCODES_TABLE . "
+				SET bbcode_order = $next_bbcode_order
 				WHERE bbcode_id = {$row['bbcode_id']}";
 		$db->sql_query($sql);
 
@@ -654,6 +671,7 @@ function bbvideo_updater($action, $version)
 		'3.0.10'  => array('51'),
 		'3.0.11'  => array('52', '53', '54', '55'),
 		'3.0.12'  => array('56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '209'),
+		'3.0.14'  => array(), // no BBvideos to add
 	);
 
 	// Array containing arrays of old BBvideo IDs removed from ABBC3
@@ -662,6 +680,7 @@ function bbvideo_updater($action, $version)
 		'3.0.10'  => array(), // no BBvideos to remove
 		'3.0.11'  => array('111', '112', '113', '114'),
 		'3.0.12'  => array('101', '102', '103', '104', '105', '106', '107', '108', '109', '110'),
+		'3.0.14'  => array('207', '208'),
 	);
 
 	switch ($action)
@@ -700,7 +719,7 @@ function bbvideo_updater($action, $version)
 			$umil->config_update('ABBC3_VIDEO_OPTIONS', implode(';', $video_options_array));
 		break;
 	}
-	
+
 	// Return a string
 	return $user->lang['INSTALLER_BBVIDEO_UPDATER'];
 }
@@ -711,7 +730,7 @@ function bbvideo_updater($action, $version)
 function image_resizer_updater($action, $version)
 {
 	global $umil, $user;
-	
+
 	// Array containing names of replacement image resizers
 	$new_resizer = array(
 		'3.0.9.3'  => 'Shadowbox',
@@ -2055,6 +2074,7 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'bbcode_image'			=> 'quicktime.gif',
 				'bbcode_group'			=> '0',
 			),
+		/*	Deprecated in v3.0.14
 			'ram'		=> array(
 				'bbcode_tag'			=> 'ram',
 				'bbcode_order'			=> 73,
@@ -2073,6 +2093,7 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'bbcode_image'			=> 'ram.gif',
 				'bbcode_group'			=> '0',
 			),
+		*/
 			'youtube'		=> array(
 				'bbcode_tag'			=> 'youtube',
 				'bbcode_order'			=> 74,
@@ -2486,6 +2507,28 @@ function get_abbc3_bbcodes($action = 'install', $version = '3.0.8')
 				'abbcode'				=> 1,
 				'bbcode_image'			=> 'moderator.gif',
 				'bbcode_group'			=> '5, 4',
+			),
+		),
+		// BBCodes new and/or changed in version 3.0.14
+		'3.0.14' => array(
+			// Modified first and second pass match/replace
+			'youtube'		=> array(
+				'bbcode_tag'			=> 'youtube',
+				'bbcode_order'			=> 74,
+				'bbcode_id'				=> 1,
+				'bbcode_helpline'		=> 'ABBC3_YOUTUBE_TIP',
+				'bbcode_match'			=> '[youtube]{URL}[/youtube]',
+				'bbcode_tpl'			=> '<a src="{URL}">{URL}</a>',
+				'first_pass_match'		=> '!\[youtube\](https?://(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)([^[]*)?)\[/youtube\]!ies',
+				'first_pass_replace'	=> '\'[youtube:$uid]${1}[/youtube:$uid]\'',
+				'second_pass_match'		=> '!\[youtube:$uid\]https?://(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\w\-\s])([\w\-]{11})(?=[^\w\-]|$)([^[]*)?\[/youtube:$uid\]!sie',
+				'second_pass_replace'	=> "\$this->auto_embed_video('//www.youtube.com/v/\${1}?version=3&hl=en_US', '560', '340')",
+				'display_on_posting'	=> 0,
+				'display_on_pm'			=> 0,
+				'display_on_sig'		=> 0,
+				'abbcode'				=> 1,
+				'bbcode_image'			=> 'youtube.gif',
+				'bbcode_group'			=> '0',
 			),
 		),
 	);

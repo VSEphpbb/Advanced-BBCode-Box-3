@@ -24,7 +24,7 @@
 				<contributions-group>
 					<contributions status="past" from="2008-01-10" to="2012-03-01" position="Developer"/>
 				</contributions-group>
-			</author>			
+			</author>
 			<author>
 				<username><![CDATA[darky]]></username>
 				<homepage><![CDATA[http://www.foruminfopc.fr/]]></homepage>
@@ -40,7 +40,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>3.0.13</mod-version>
+		<mod-version>3.0.14</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
